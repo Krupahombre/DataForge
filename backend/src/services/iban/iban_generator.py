@@ -3,13 +3,26 @@ import csv
 import random
 import string
 
+from src.services.base_generator import BaseGenerator
 
-class IBANGenerator:
+
+class IBANGenerator(BaseGenerator):
     def __init__(self):
-        self.bank_institutions_file = 'data/bank_institutions.csv'
+        # TODO change after db setup
+        self.bank_institutions_file = '/code/src/services/iban/data/bank_institutions.csv'
         self.logger = logging.getLogger('IBANGenerator')
         self.iban_prefix = 'PL00'
         self.bank_num_length = 16
+        self.supported_types = ["iban"]
+
+    def get_supported_types(self) -> list[str]:
+        return self.supported_types
+
+    def generate(self, types: list[str]) -> dict[str, any]:
+        for type in types:
+            if type not in self.supported_types:
+                raise Exception(f"Unsupported type {type}")
+        return dict([("iban", self.generate_iban())])
 
     def generate_random_account_number(self):
         return ''.join(random.choices(string.digits, k=self.bank_num_length))
@@ -94,6 +107,6 @@ class IBANGenerator:
 
 iban_generator = IBANGenerator()
 
-if __name__ == "__main__":
-    result = iban_generator.generate_iban()
-    print(result)
+# if __name__ == "__main__":
+#     result = iban_generator.generate_iban()
+#     print(result)
