@@ -7,6 +7,8 @@ const StyledAllSquaresDiv = styled.div`
   max-width: 50%;
   flex-wrap: wrap;
   height: auto;
+  justify-content: flex-start;
+  align-itmes: flex-start;
 `;
 
 export default function AllFormats() {

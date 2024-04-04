@@ -18,6 +18,7 @@ body{
 
 const StyledUsersChoice = styled.div`
   display: flex;
+  align-items: flex-start;
 `;
 
 export default function Home() {
