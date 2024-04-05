@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import styled from "styled-components";
 
 const StyledAllDiv = styled.div`
@@ -11,15 +12,23 @@ const StyledAllDiv = styled.div`
   justify-content: center;
   font-size: 1.1rem;
   color: white;
+  background: ${({ isSelected, color }) => (isSelected ? "green" : color)};
+  transition: background-color 0.5s;
+  &:hover {
+    background: rgb(85, 116, 166);
+  }
+  cursor: pointer;
 `;
 
 export default function SingleSquare({ title, color }) {
+  const [isSelected, setIsSelected] = useState(false);
+
+  const handleClick = () => {
+    setIsSelected(!isSelected);
+  };
+
   return (
-    <StyledAllDiv
-      style={{
-        background: color,
-      }}
-    >
+    <StyledAllDiv isSelected={isSelected} color={color} onClick={handleClick}>
       {title}
     </StyledAllDiv>
   );

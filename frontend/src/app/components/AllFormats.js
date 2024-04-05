@@ -15,11 +15,11 @@ export default function AllFormats() {
   return (
     <>
       <StyledAllSquaresDiv>
-        <SingleSquare title="JSON" color={"rgb(104, 113, 156)"} />
-        <SingleSquare title="BJSON" color={"rgb(104, 113, 156)"} />
-        <SingleSquare title="Oracle" color={"rgb(104, 113, 156)"} />
-        <SingleSquare title="MySQL" color={"rgb(104, 113, 156)"} />
-        <SingleSquare title="FireBird" color={"rgb(104, 113, 156)"} />
+        <SingleSquare title="JSON" color={"rgb(62, 99, 158)"} />
+        <SingleSquare title="BJSON" color={"rgb(62, 99, 158)"} />
+        <SingleSquare title="Oracle" color={"rgb(62, 99, 158)"} />
+        <SingleSquare title="MySQL" color={"rgb(62, 99, 158)"} />
+        <SingleSquare title="FireBird" color={"rgb(62, 99, 158)"} />
       </StyledAllSquaresDiv>
     </>
   );

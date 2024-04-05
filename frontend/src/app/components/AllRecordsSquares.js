@@ -12,15 +12,15 @@ export default function AllRecordsSquares() {
   return (
     <>
       <StyledAllSquaresDiv>
-        <SingleSquare title="Name" color={"rgb(64, 84, 184)"} />
+        <SingleSquare title="Name" color={"rgb(63, 76, 138)"} />
         <SingleSquare title="Surname" color={"rgb(63, 76, 138)"} />
-        <SingleSquare title="IBAN" color={"rgb(104, 113, 156)"} />
-        <SingleSquare title="IBAN" color={"rgb(104, 113, 156)"} />
-        <SingleSquare title="IBAN" color={"rgb(104, 113, 156)"} />
-        <SingleSquare title="IBAN" color={"rgb(104, 113, 156)"} />
-        <SingleSquare title="IBAN" color={"rgb(104, 113, 156)"} />
-        <SingleSquare title="IBAN" color={"rgb(104, 113, 156)"} />
-        <SingleSquare title="IBAN" color={"rgb(104, 113, 156)"} />
+        <SingleSquare title="IBAN" color={"rgb(63, 76, 138)"} />
+        <SingleSquare title="IBAN" color={"rgb(63, 76, 138)"} />
+        <SingleSquare title="IBAN" color={"rgb(63, 76, 138)"} />
+        <SingleSquare title="IBAN" color={"rgb(63, 76, 138)"} />
+        <SingleSquare title="IBAN" color={"rgb(63, 76, 138)"} />
+        <SingleSquare title="IBAN" color={"rgb(63, 76, 138)"} />
+        <SingleSquare title="IBAN" color={"rgb(63, 76, 138)"} />
       </StyledAllSquaresDiv>
     </>
   );
