@@ -46,8 +46,15 @@ class PersonGenerator(BaseGenerator):
     def calculate_control_digit(self, pre_pesel: str) -> str:
         sum = 0
         for i in range(len(pre_pesel)):
-            sum += int(pre_pesel[i]) * self.control_digit_weights[i]
-        control_digit = (10 - (sum % 10)) % 10
+            result = int(pre_pesel[i]) * self.control_digit_weights[i]
+            if result >= 10:
+                result = result % 10
+
+            sum += result
+
+        if sum >= 10:
+            sum = sum % 10
+        control_digit = (10 - sum) % 10
 
         return str(control_digit)
 
