@@ -27,9 +27,6 @@ def generate_data(request_types: list[str]):
     gen_types = []
     for generator in generators.keys():
         supported_datatypes = generator.get_supported_types()
-        if not request_types:
-            continue
-
         for sup_type in supported_datatypes:
             if sup_type in request_types:
                 request_types.remove(sup_type)
@@ -37,7 +34,6 @@ def generate_data(request_types: list[str]):
         if gen_types:
             generators[generator] = gen_types
             gen_types = []
-        print(f"Request types after generator: {request_types}")
 
     if request_types:
         raise HTTPException(
