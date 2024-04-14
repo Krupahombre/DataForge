@@ -1,4 +1,1 @@
-# DataForge - frontend
-
-To run preview mode go to `'\frontend\'` and then type `'npm run dev'`.
-Polecam się.
+This is a starter template for [Learn Next.js](https://nextjs.org/learn).
