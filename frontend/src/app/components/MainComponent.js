@@ -3,9 +3,16 @@ import AllRecordsSquares from "./AllRecordsSquares";
 import AllFormats from "./AllFormats";
 import Banner from "./Banner";
 
+const MainDiv = styled.div`
+  display: block;
+  align-items: center;
+  justify-content: center;
+`;
+
 const StyledUsersChoice = styled.div`
   display: flex;
   align-items: flex-start;
+  justify-content: center;
 `;
 
 const StyledButtonDiv = styled.div`
@@ -31,7 +38,7 @@ const StyledGenerateButton = styled.button`
 
 export default function MainComponent() {
   return (
-    <>
+    <MainDiv>
       <Banner />
       <StyledUsersChoice>
         <AllRecordsSquares />
@@ -40,6 +47,6 @@ export default function MainComponent() {
       <StyledButtonDiv>
         <StyledGenerateButton>Generate</StyledGenerateButton>
       </StyledButtonDiv>
-    </>
+    </MainDiv>
   );
 }

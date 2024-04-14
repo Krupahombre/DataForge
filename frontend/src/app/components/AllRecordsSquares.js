@@ -9,6 +9,7 @@ const StyledMainDiv = styled.div`
 const StyledAllSquaresDiv = styled.div`
   display: flex;
   flex-wrap: wrap;
+  max-width: 600px;
 `;
 
 const StyledInfo = styled.label`

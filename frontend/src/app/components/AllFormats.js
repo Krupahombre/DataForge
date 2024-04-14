@@ -12,6 +12,7 @@ const StyledAllSquaresDiv = styled.div`
   height: auto;
   justify-content: flex-start;
   align-itmes: flex-start;
+  max-width: 600px;
 `;
 
 const StyledInfo = styled.label`
