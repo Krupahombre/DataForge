@@ -2,14 +2,21 @@ import logging
 import csv
 import random
 import string
+from typing import List
 
+from pydantic import BaseModel
 from src.services.base_generator import BaseGenerator
+
+
+class IBANModel(BaseModel):
+    iban: str = None
 
 
 class IBANGenerator(BaseGenerator):
     def __init__(self):
         # TODO change after db setup
-        self.bank_institutions_file = '/code/src/services/iban/data/bank_institutions.csv'
+        self.bank_institutions_file = './src/services/iban/data/bank_institutions.csv'
+        self.bank_institutions = self.load_data_from_file(self.bank_institutions_file)
         self.logger = logging.getLogger('IBANGenerator')
         self.iban_prefix = 'PL00'
         self.bank_num_length = 16
@@ -18,11 +25,11 @@ class IBANGenerator(BaseGenerator):
     def get_supported_types(self) -> list[str]:
         return self.supported_types
 
-    def generate(self, types: list[str]) -> dict[str, any]:
+    def generate(self, types: list[str], records_to_generate: int) -> dict[str, any]:
         for type in types:
             if type not in self.supported_types:
                 raise Exception(f"Unsupported type {type}")
-        return dict([("iban", self.generate_iban())])
+        return dict([("iban", self.generate_iban(records_to_generate))])
 
     def generate_random_account_number(self):
         return ''.join(random.choices(string.digits, k=self.bank_num_length))
@@ -73,40 +80,37 @@ class IBANGenerator(BaseGenerator):
         return self.iban_prefix + bank_num + account_num
 
     def iban_checksum(self, iban):
-        # Krok 1: Przesuń 4 pierwsze znaki na koniec
         iban = iban[4:] + iban[:4]
 
-        # Krok 2: Zamień litery na dwucyfrowe liczby
         iban_numeric = self.convert_str_to_num(iban)
 
-        # Krok 3 i 4: Oblicz sumę kontrolną (dla każdej części)
         iban_parts = self.divide_number(iban_numeric)
         reminder = self.calculate_reminder(iban_parts)
         answer = reminder
 
-        # Krok 5: Jeśli reszta jest jednocyfrowa, dodaj zero przed nią
         if int(reminder) < 10:
             answer = f'0{reminder}'
 
         return str(answer)
 
-    def generate_iban(self) -> str:
-        bank_data = self.load_data_from_file(self.bank_institutions_file)
+    def generate_iban(self, records_to_generate: int) -> List[IBANModel]:
+        response_data = []
+        for i in range(0, records_to_generate):
+            random_bank_num = random.choice(self.bank_institutions)
 
-        random_bank_num = random.choice(bank_data)
+            iban_pl = self.create_default_iban(random_bank_num, self.generate_random_account_number())
 
-        iban_pl = self.create_default_iban(random_bank_num, self.generate_random_account_number())
+            checksum = self.iban_checksum(iban_pl)
+            checksum = f"PL{checksum}"
 
-        checksum = self.iban_checksum(iban_pl)
-        checksum = f"PL{checksum}"
+            result = iban_pl.replace(self.iban_prefix, checksum)
 
-        result = iban_pl.replace("PL00", checksum)
+            iban = IBANModel(
+                iban=result
+            )
+            response_data.append(iban)
 
-        return result
+        return response_data
 
 
 iban_generator = IBANGenerator()
-
-# if __name__ == "__main__":
-#     result = iban_generator.generate_iban()
-#     print(result)

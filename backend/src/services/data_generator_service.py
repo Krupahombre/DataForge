@@ -9,6 +9,8 @@ from starlette import status
 
 from src.services.base_generator import BaseGenerator
 
+from src.server.models.generator_model import GeneratorModel
+
 logger = logging.getLogger("DataGeneratorService")
 
 generators: dict[BaseGenerator, list[str]] = {iban_generator: [], person_generator: []}
@@ -18,7 +20,10 @@ def get_available_generators_list() -> List[str]:
     return [enum.name.lower() for enum in Generators]
 
 
-def generate_data(request_types: list[str]):
+def generate_data(generator_data: GeneratorModel):
+    request_types = generator_data.generators_list
+    records_to_generate = generator_data.records
+
     if request_types is None:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -43,7 +48,7 @@ def generate_data(request_types: list[str]):
     response = {}
     for generator, datatypes in generators.items():
         if datatypes:
-            response.update(generator.generate(datatypes))
+            response.update(generator.generate(datatypes, records_to_generate))
         generators[generator] = []
 
     return response

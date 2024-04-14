@@ -3,16 +3,16 @@ from starlette import status
 
 from src.services.data_generator_service import get_available_generators_list
 
-from src.services.data_generator_service import generate_data
-
 from src.services.generator_brain_service import generate_data_with_response_format
+
+from src.server.models.generator_model import GeneratorModel
 
 router = APIRouter(prefix="/data-generator", tags=["Data Generator"])
 
 
-@router.get("/", status_code=status.HTTP_200_OK)
-async def data_generator(generators_list: list[str] = Query(None)):
-    return generate_data_with_response_format(generators_list)
+@router.post("/", status_code=status.HTTP_200_OK)
+async def data_generator(generator_data: GeneratorModel):
+    return generate_data_with_response_format(generator_data)
 
 
 @router.get("/get-generators", response_model=list[str], status_code=status.HTTP_200_OK)

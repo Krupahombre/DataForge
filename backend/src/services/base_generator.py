@@ -5,7 +5,7 @@ class BaseGenerator:
     def get_supported_data(self) -> list[str]:
         pass
 
-    def generate(self, types: list[str]) -> dict[str, any]:
+    def generate(self, types: list[str], records_to_generate: int) -> dict[str, any]:
         pass
 
     def check_support(self, types: list[str]):
