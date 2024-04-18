@@ -1,4 +1,5 @@
-import HeroPage from "./components/HeroPage";
+import ResultDisplayPage from "./components/ResultDisplayPage";
+
 export default function Home() {
-  return <HeroPage />;
+  return <ResultDisplayPage />;
 }

@@ -88,3 +88,13 @@
   align-items: center;
   padding: 50px;
 }
+
+.resultCodeDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: rgb(86, 88, 92);
+  margin-top: 20px;
+  background-color: rgb(85, 116, 166);
+}
