@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 .heroBox {
   display: flex;
   flex-direction: column;
@@ -90,11 +92,48 @@
 }
 
 .resultCodeDisplay {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   font-size: 1.2rem;
-  color: rgb(86, 88, 92);
-  margin-top: 20px;
-  background-color: rgb(85, 116, 166);
+  background-color: white;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.resultPDisplay {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  border: 2px solid rgb(158, 160, 165);
+  box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.1);
+  background-color: rgb(73, 105, 137);
+  padding: 10px;
+  max-width: 1600px;
+  border-radius: 5px;
+  white-space: pre-wrap;
+  min-height: 75vh;
+}
+
+.mainDiv {
+  margin: 15px;
+  font-family: "Roboto", sans-serif;
+  font-style: normal;
+}
+
+.resultDisplay {
+  display: flex;
+  font-size: 1.6rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.childDiv {
+}
+
+.childDivTheSecond {
+}
+
+.resultDisplayTitle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
