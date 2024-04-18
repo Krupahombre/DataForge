@@ -26,20 +26,20 @@ const ResultDisplayPage = () => {
     if (data) {
       const formattedSql = data.iban
         .toString()
-        .replace(/;/g, ";\n") // Dodaj nową linię po każdym średniku
-        .replace(/CREATE/g, "\nCREATE") // Dodaj nową linię przed CREATE
-        .replace(/INSERT/g, "\nINSERT") // Dodaj nową linię przed INSERT
-        .replace(/DROP/g, "\nDROP") // Dodaj nową linię przed DROP
-        .replace(/VALUES/g, "\nVALUES"); // Dodaj nową linię przed VALUES
+        .replace(/;/g, ";\n")
+        .replace(/CREATE/g, "\nCREATE")
+        .replace(/INSERT/g, "\nINSERT")
+        .replace(/DROP/g, "\nDROP")
+        .replace(/VALUES/g, "\nVALUES");
 
       setFormattedIban(formattedSql);
       const formattedSqlPerson = data.person
         .toString()
-        .replace(/;/g, ";\n") // Dodaj nową linię po każdym średniku
-        .replace(/CREATE/g, "\nCREATE") // Dodaj nową linię przed CREATE
-        .replace(/INSERT/g, "\nINSERT") // Dodaj nową linię przed INSERT
-        .replace(/DROP/g, "\nDROP") // Dodaj nową linię przed DROP
-        .replace(/VALUES/g, "\nVALUES"); // Dodaj nową linię przed VALUES
+        .replace(/;/g, ";\n")
+        .replace(/CREATE/g, "\nCREATE")
+        .replace(/INSERT/g, "\nINSERT")
+        .replace(/DROP/g, "\nDROP")
+        .replace(/VALUES/g, "\nVALUES");
 
       setFormattedPerson(formattedSqlPerson);
     }
