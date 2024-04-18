@@ -5,7 +5,7 @@ from unidecode import unidecode
 
 class EmailGenerator:
     def __init__(self):
-        self.domains_file = './src/services/person/data/all_email_provider_domains.txt'
+        self.domains_file = 'backend/data/all_email_provider_domains.txt'
         # self.domains_file = '/code/src/services/person/data/all_email_provider_domains.txt'
         self.domains = self.load_data_from_txt(self.domains_file)
 

@@ -27,10 +27,10 @@ class PersonGenerator(BaseGenerator):
         # self.male_surnames_file_path = '/code/src/services/person/data/male_surnames.csv'
         # self.female_names_file_path = '/code/src/services/person/data/female_names.csv'
         # self.female_surnames_file_path = '/code/src/services/person/data/female_surnames.csv'
-        self.male_names_file_path = './src/services/person/data/male_names.csv'
-        self.male_surnames_file_path = './src/services/person/data/male_surnames.csv'
-        self.female_names_file_path = './src/services/person/data/female_names.csv'
-        self.female_surnames_file_path = './src/services/person/data/female_surnames.csv'
+        self.male_names_file_path = './backend/data/male_names.csv'
+        self.male_surnames_file_path = './backend/data/male_surnames.csv'
+        self.female_names_file_path = './backend/data/female_names.csv'
+        self.female_surnames_file_path = './backend/data/female_surnames.csv'
         self.males = (
             self.load_data_from_csv(self.male_names_file_path),
             self.load_data_from_csv(self.male_surnames_file_path)

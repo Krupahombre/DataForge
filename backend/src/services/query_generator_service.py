@@ -5,7 +5,7 @@ from src.utils.field_type_getter import get_field_type
 
 
 def generate_sql_query(result: dict) -> List[str]:
-    final_queries = []
+    final_queries: dict[str, str] = {}
 
     for generator in result:
         result_gen = result[generator]
@@ -67,7 +67,7 @@ def generate_sql_query(result: dict) -> List[str]:
         )
 
         final_query_gen = ' '.join([drop_table_command, create_table_command, insert_into_command])
-        final_queries.append(final_query_gen)
+        final_queries[generator] = final_query_gen
 
         print(f"Query assembled successfully for {generator} generator")
 
