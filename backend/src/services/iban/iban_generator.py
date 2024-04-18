@@ -7,6 +7,8 @@ from typing import List
 from pydantic import BaseModel
 from src.services.base_generator import BaseGenerator
 
+logger = logging.getLogger("IbanGenerator")
+
 
 class IBANModel(BaseModel):
     iban: str = None
@@ -28,6 +30,7 @@ class IBANGenerator(BaseGenerator):
     def generate(self, types: list[str], records_to_generate: int) -> dict[str, any]:
         for type in types:
             if type not in self.supported_types:
+                logger.exception(f"Unsupported type {type}")
                 raise Exception(f"Unsupported type {type}")
         return dict([("iban", self.generate_iban(records_to_generate))])
 

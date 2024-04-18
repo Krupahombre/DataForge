@@ -1,3 +1,7 @@
+import logging
+import os
+import sys
+
 import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
@@ -14,6 +18,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+if not os.path.isfile(sys.argv[1]):
+    print('Logging config file not found')
+    raise FileNotFoundError('Logging config file not found')
+logging.config.fileConfig(sys.argv[1], disable_existing_loggers=False)
 
 
 if __name__ == '__main__':

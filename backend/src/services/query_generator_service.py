@@ -1,7 +1,11 @@
+import logging
 from typing import List
 
 from src.utils.enums.sql_templates import PostgreSQLTemplates
 from src.utils.field_type_getter import get_field_type
+
+
+logger = logging.getLogger("QueryGeneratorService")
 
 
 def generate_sql_query(result: dict) -> List[str]:
@@ -25,6 +29,7 @@ def generate_sql_query(result: dict) -> List[str]:
             elif field_type == int:
                 key_type = PostgreSQLTemplates.INT_TYPE.value.replace('{column_name}', column_name)
             else:
+                logger.exception(f"Unsupported field type: {field_type}")
                 raise Exception("Unsupported field type")
 
             columns.append(column_name)
@@ -68,7 +73,4 @@ def generate_sql_query(result: dict) -> List[str]:
 
         final_query_gen = ' '.join([drop_table_command, create_table_command, insert_into_command])
         final_queries[generator] = final_query_gen
-
-        print(f"Query assembled successfully for {generator} generator")
-
     return final_queries

@@ -1,5 +1,6 @@
 import csv
 import datetime
+import logging
 import random
 from time import sleep
 from typing import Tuple, List
@@ -9,6 +10,8 @@ from backend.src.services.base_generator import BaseGenerator
 from backend.src.services.person.email_generator import email_generator
 from backend.src.services.person.pesel_generator import pesel_generator
 from backend.src.utils.enums.gender import GenderEnum
+
+logger = logging.getLogger("PersonGenerator")
 
 
 class PersonModel(BaseModel):
@@ -47,6 +50,7 @@ class PersonGenerator(BaseGenerator):
     def generate(self, types: list[str], records_to_generate: int) -> dict[str, any]:
         for type in types:
             if type not in self.supported_types:
+                logger.exception(f"Unsupported data type: {type}")
                 raise Exception(f"Unsupported type {type}")
         return dict([("person", self.generate_person(records_to_generate))])
 
