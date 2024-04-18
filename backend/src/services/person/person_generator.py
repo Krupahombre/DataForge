@@ -6,10 +6,10 @@ from time import sleep
 from typing import Tuple, List
 
 from pydantic import BaseModel
-from backend.src.services.base_generator import BaseGenerator
-from backend.src.services.person.email_generator import email_generator
-from backend.src.services.person.pesel_generator import pesel_generator
-from backend.src.utils.enums.gender import GenderEnum
+from src.services.base_generator import BaseGenerator
+from src.services.person.email_generator import email_generator
+from src.services.person.pesel_generator import pesel_generator
+from src.utils.enums.gender import GenderEnum
 
 logger = logging.getLogger("PersonGenerator")
 
@@ -30,10 +30,10 @@ class PersonGenerator(BaseGenerator):
         # self.male_surnames_file_path = '/code/src/services/person/data/male_surnames.csv'
         # self.female_names_file_path = '/code/src/services/person/data/female_names.csv'
         # self.female_surnames_file_path = '/code/src/services/person/data/female_surnames.csv'
-        self.male_names_file_path = './backend/data/male_names.csv'
-        self.male_surnames_file_path = './backend/data/male_surnames.csv'
-        self.female_names_file_path = './backend/data/female_names.csv'
-        self.female_surnames_file_path = './backend/data/female_surnames.csv'
+        self.male_names_file_path = 'data/male_names.csv'
+        self.male_surnames_file_path = 'data/male_surnames.csv'
+        self.female_names_file_path = 'data/female_names.csv'
+        self.female_surnames_file_path = 'data/female_surnames.csv'
         self.males = (
             self.load_data_from_csv(self.male_names_file_path),
             self.load_data_from_csv(self.male_surnames_file_path)
