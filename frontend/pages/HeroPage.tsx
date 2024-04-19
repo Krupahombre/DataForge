@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import styles from "../../styles/Home.module.css";
-import ColumnFilters from "./ColumnFilters";
-import TypeFilters from "./TypeFilters";
-import IFilter from "../../common/models/IFilter";
+import styles from "../styles/Home.module.css";
+import ColumnFilters from "../components/ColumnFilters";
+import TypeFilters from "../components/TypeFilters";
+import IFilter from "../common/models/IFilter";
+import type { NextPage } from 'next';
+import { useRouter } from "next/router";
 
-const HeroPage = () => {
+const HeroPage:NextPage = () => {
   const [columnTypes, setColumnFilters] = useState([]);
   const [typeFilters, setTypeFilters] = useState([]);
+  
+  const router = useRouter();
 
   const handleGenerate = () => {
-    if (isFormFilled()) console.log("Generate button clicked");
+    if (isFormFilled()) router.push('/ResultDisplayPage');
   };
 
   useEffect(() => {

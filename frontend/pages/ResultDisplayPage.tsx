@@ -1,12 +1,15 @@
 import React, { useState, useEffect, use } from "react";
-import getData from "../../common/services/getGeneratedData";
-import IResponse from "../../common/models/IResponse";
-import styles from "../../styles/Home.module.css";
+import getData from "../common/services/getGeneratedData";
+import IResponse from "../common/models/IResponse";
+import styles from "../styles/Home.module.css";
+import { useRouter } from "next/router";
 
 const ResultDisplayPage = () => {
   const [data, setData] = useState<IResponse>(null);
   const [formattedIban, setFormattedIban] = useState(null);
   const [formattedPerson, setFormattedPerson] = useState(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     fetchData();

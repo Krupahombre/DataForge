@@ -1,5 +1,7 @@
-import ResultDisplayPage from "./components/ResultDisplayPage";
+import { useRouter } from "next/router";
+import HeroPage from "./HeroPage";
 
 export default function Home() {
-  return <ResultDisplayPage />;
-}
+  return <HeroPage/>
+  };
+

@@ -1,21 +1,22 @@
 import React from "react";
+import styles from "../styles/Home.module.css";
 import ColumnFilterBox from "./ColumnFilterBox";
-import styles from "../../styles/Home.module.css";
-import IFiltersProps from "../../common/models/IFilterProps";
+import IFiltersProps from "../common/models/IFilterProps";
 
-const ColumnFilters: React.FC<IFiltersProps> = ({ filters, setFilters }) => {
+const TypeFilters: React.FC<IFiltersProps> = ({ filters, setFilters }) => {
   const handleToggle = (key: number) => {
-    const newFilters = [...filters];
-    newFilters[key] = {
-      ...newFilters[key],
-      selected: !newFilters[key].selected,
-    };
+    const newFilters = filters.map((filter, index) => {
+      return {
+        ...filter,
+        selected: index === key,
+      };
+    });
     setFilters(newFilters);
   };
 
   return (
-    <div className={styles.chooseFilterWrapper}>
-      <h1 className={styles.chooseFiltersLabel}>Choose the types of data:</h1>
+    <div>
+      <h1 className={styles.chooseFiltersLabel}>Choose a data format:</h1>
       <div className={styles.chooseFilterBox}>
         {filters.map((filter, key) => (
           <ColumnFilterBox
@@ -30,4 +31,4 @@ const ColumnFilters: React.FC<IFiltersProps> = ({ filters, setFilters }) => {
   );
 };
 
-export default ColumnFilters;
+export default TypeFilters;

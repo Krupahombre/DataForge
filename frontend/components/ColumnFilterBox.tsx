@@ -1,4 +1,4 @@
-import styles from "../../styles/Home.module.css";
+import styles from "../styles/Home.module.css";
 
 const SquareBox = (props) => {
   const { changeSelectedState, selectedState, columnName } = props;
