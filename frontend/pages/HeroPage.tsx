@@ -1,45 +1,53 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
-import ColumnFilters from "../components/ColumnFilters";
+import FormatFilters from "../components/FormatFilters";
 import TypeFilters from "../components/TypeFilters";
 import IFilter from "../common/models/IFilter";
-import type { NextPage } from 'next';
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-const HeroPage:NextPage = () => {
-  const [columnTypes, setColumnFilters] = useState([]);
-  const [typeFilters, setTypeFilters] = useState([]);
-  
+const HeroPage: NextPage = () => {
+  const [formatFilters, setFormatFilters] = useState<IFilter[]>(
+    [] as IFilter[]
+  );
+  const [typeFilters, setTypeFilters] = useState<IFilter[]>([] as IFilter[]);
   const router = useRouter();
 
   const handleGenerate = () => {
-    if (isFormFilled()) router.push('/ResultDisplayPage');
+    console.log(typeFilters, formatFilters);
+    const type = typeFilters.filter((column) => column.selected);
+    const format = formatFilters.find((type) => type.selected)?.name;
+
+    if (isFormFilled()) {
+      const queryString =
+        `a=b&format=${format}&` +
+        type.map((value) => `type=${value.name}`).join("&");
+      router.push(`/ResultDisplayPage?${queryString}`);
+    }
   };
 
   useEffect(() => {
-    setColumnFilters(getColumns());
+    setFormatFilters(getFormat());
     setTypeFilters(getTypes());
   }, []);
 
-  const getColumns = (): IFilter[] => {
+  const getTypes = (): IFilter[] => {
     return [
-      { name: "Name", selected: false },
-      { name: "LastName", selected: false },
-      { name: "IBAN", selected: false },
+      { name: "person", selected: false },
+      { name: "iban", selected: false },
     ];
   };
 
-  const getTypes = (): IFilter[] => {
+  const getFormat = (): IFilter[] => {
     return [
       { name: "JSON", selected: false },
       { name: "MySQL", selected: false },
-      { name: "DUPA", selected: false },
     ];
   };
 
   const isFormFilled = () => {
     return (
-      columnTypes.some((column) => column.selected) &&
+      formatFilters.some((column) => column.selected) &&
       typeFilters.some((type) => type.selected)
     );
   };
@@ -49,8 +57,8 @@ const HeroPage:NextPage = () => {
       <h1 className={styles.heroLabel}>Data Forge</h1>
       <h2 className={styles.heroSubLabel}>Generate your data!</h2>
       <div className={styles.userInputWrapper}>
-        <ColumnFilters filters={columnTypes} setFilters={setColumnFilters} />
         <TypeFilters filters={typeFilters} setFilters={setTypeFilters} />
+        <FormatFilters filters={formatFilters} setFilters={setFormatFilters} />
       </div>
       <div className={styles.generateBottonBox}>
         <button onClick={handleGenerate} className={styles.generateButton}>

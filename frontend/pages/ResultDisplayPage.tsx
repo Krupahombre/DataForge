@@ -1,66 +1,71 @@
 import React, { useState, useEffect, use } from "react";
 import getData from "../common/services/getGeneratedData";
-import IResponse from "../common/models/IResponse";
+import IDisplayDataRecord from "../common/models/IDisplayDataRecord";
 import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
+import type { NextPage } from "next";
 
-const ResultDisplayPage = () => {
-  const [data, setData] = useState<IResponse>(null);
-  const [formattedIban, setFormattedIban] = useState(null);
-  const [formattedPerson, setFormattedPerson] = useState(null);
+const ResultDisplayPage: NextPage = () => {
+  const [data, setData] = useState<IDisplayDataRecord[]>(
+    [] as IDisplayDataRecord[]
+  );
 
   const router = useRouter();
 
   useEffect(() => {
-    fetchData();
+    const currentUrl = window.location.href;
+
+    const urlParams = new URLSearchParams(currentUrl);
+
+    const format = urlParams.get("format");
+    const types = urlParams.getAll("type");
+
+    fetchData(format, types);
   }, []);
 
-  const fetchData = async () => {
-    const response = await getData();
-    console.log(response);
-    setData(response);
+  const fetchData = async (format: string, types: string[]) => {
+    const response = await getData(format, types);
+    const data = formatedData(response);
+    setData(data);
   };
 
-  useEffect(() => {
-    formatData();
-  }, [data]);
+  const handleBack = () => {
+    router.push("/");
+  };
 
-  const formatData = () => {
-    if (data) {
-      const formattedSql = data.iban
-        .toString()
-        .replace(/;/g, ";\n")
-        .replace(/CREATE/g, "\nCREATE")
-        .replace(/INSERT/g, "\nINSERT")
-        .replace(/DROP/g, "\nDROP")
-        .replace(/VALUES/g, "\nVALUES");
+  const formatedData = (response: IDisplayDataRecord[]) => {
+    if (response) {
+      const formatedStringData = response.map((record) => {
+        const formattedResponse = record.response
+          .replace(/;/g, ";\n")
+          .replace(/CREATE/g, "\nCREATE")
+          .replace(/INSERT/g, "\nINSERT")
+          .replace(/DROP/g, "\nDROP")
+          .replace(/VALUES/g, "\nVALUES");
 
-      setFormattedIban(formattedSql);
-      const formattedSqlPerson = data.person
-        .toString()
-        .replace(/;/g, ";\n")
-        .replace(/CREATE/g, "\nCREATE")
-        .replace(/INSERT/g, "\nINSERT")
-        .replace(/DROP/g, "\nDROP")
-        .replace(/VALUES/g, "\nVALUES");
-
-      setFormattedPerson(formattedSqlPerson);
+        return {
+          name: record.name,
+          response: formattedResponse,
+        };
+      });
+      return formatedStringData;
     }
   };
 
   return (
     <div className={styles.mainDiv}>
-      <h1 className={styles.resultDisplayTitle}>Generated Data</h1>
+      <div>
+        <button onClick={handleBack}>Return</button>
+        <h1 className={styles.resultDisplayTitle}>Generated Data</h1>
+      </div>
       {data && (
         <div className={styles.resultCodeDisplay}>
-          <div>
-            <p className={styles.resultDisplay}>Person</p>
-            <pre className={styles.resultPDisplay}>{formattedPerson}</pre>
-          </div>
-          <div>
-            <p className={styles.resultDisplay}>IBAN</p>
-            <pre className={styles.resultPDisplay}>{formattedIban}</pre>
-          </div>
+          {data.map((record) => (
+            <div key={record.name}>
+              <p className={styles.resultDisplay}>{record.name}</p>
+              <pre className={styles.resultPDisplay}>{record.response}</pre>
+            </div>
+          ))}
         </div>
       )}
     </div>
