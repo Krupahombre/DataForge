@@ -18,7 +18,7 @@ class IBANGenerator(BaseGenerator):
     def __init__(self):
         # TODO change after db setup
         self.bank_institutions_file = 'data/bank_institutions.csv'
-        self.bank_institutions = self.load_data_from_file(self.bank_institutions_file)
+        self.bank_institutions = []
         self.logger = logging.getLogger('IBANGenerator')
         self.iban_prefix = 'PL00'
         self.bank_num_length = 16

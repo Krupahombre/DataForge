@@ -35,12 +35,10 @@ class PersonGenerator(BaseGenerator):
         self.female_names_file_path = 'data/female_names.csv'
         self.female_surnames_file_path = 'data/female_surnames.csv'
         self.males = (
-            self.load_data_from_csv(self.male_names_file_path),
-            self.load_data_from_csv(self.male_surnames_file_path)
+            [],[]
         )
         self.females = (
-            self.load_data_from_csv(self.female_names_file_path),
-            self.load_data_from_csv(self.female_surnames_file_path)
+            [],[]
         )
         self.supported_types = ["person"]
 

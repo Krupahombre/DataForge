@@ -5,9 +5,9 @@ from unidecode import unidecode
 
 class EmailGenerator:
     def __init__(self):
-        self.domains_file = 'data/all_email_provider_domains.txt'
-        # self.domains_file = '/code/src/services/person/data/all_email_provider_domains.txt'
-        self.domains = self.load_data_from_txt(self.domains_file)
+        self.domains_file = 'data/email_domains.csv'
+        # self.domains_file = '/code/src/services/person/data/email_domains.csv'
+        self.domains = []
 
     @staticmethod
     def load_data_from_txt(file_path: str) -> list[str]:
