@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter
 from starlette import status
 
 from src.services.data_generator_service import get_available_generators_list
@@ -15,6 +15,6 @@ async def data_generator(generator_data: GeneratorModel):
     return generate_data_with_response_format(generator_data)
 
 
-@router.get("/get-generators", response_model=list[str], status_code=status.HTTP_200_OK)
+@router.get("/get-generators", response_model=dict[str, list[str]], status_code=status.HTTP_200_OK)
 async def get_generators():
     return get_available_generators_list()
