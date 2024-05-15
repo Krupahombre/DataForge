@@ -8,7 +8,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const defaultTable: IRequestTable = {
-  name: "Person",
+  name: "",
   fields: [
     {
       name: "Name",
@@ -31,37 +31,73 @@ const defaultResultTableRecord: IResultTableRecord = {
 
 const CreateNewRequestTable = (props) => {
   const { productClasses, setTables } = props;
-  const [newResultTable, setNewResultTable] =
-    useState<IRequestTable>(defaultTable);
+  const [resultTable, setResultTable] = useState<IRequestTable>(defaultTable);
 
-  const [newResultTableRecord, setNewResultTableRecord] =
+  const [resultTableRecord, setResultTableRecord] =
     useState<IResultTableRecord>(defaultResultTableRecord);
 
   useEffect(() => {
     onSelectedSubtype("");
-  }, [newResultTableRecord.type]);
+  }, [resultTableRecord.type]);
+
+  const onTableNameChange = (name: string) => {
+    setResultTable({ ...resultTable, name });
+  };
 
   const onSelectedType = (type: string) => {
-    setNewResultTableRecord({ ...newResultTableRecord, type });
+    setResultTableRecord({ ...resultTableRecord, type });
   };
 
   const onSelectedSubtype = (subtype: string) => {
-    setNewResultTableRecord({ ...newResultTableRecord, subtype });
+    setResultTableRecord({ ...resultTableRecord, subtype });
+  };
+
+  const onChangedName = (name: string) => {
+    setResultTableRecord({ ...resultTableRecord, name });
+  };
+
+  const addNewRecord = () => {
+    if (
+      resultTableRecord.name === "" ||
+      resultTableRecord.type === "" ||
+      resultTableRecord.subtype === ""
+    )
+      return;
+    setResultTable({
+      ...resultTable,
+      fields: [...resultTable.fields, resultTableRecord],
+    });
+    setResultTableRecord(defaultResultTableRecord);
+  };
+
+  const handleRemoveField = (index) => {
+    const updatedFields = resultTable.fields.filter((_, i) => i !== index);
+    setResultTable({ ...resultTable, fields: updatedFields });
   };
 
   const getSubtypesArray = () => {
-    if (!newResultTableRecord.type) return [];
+    if (!resultTableRecord.type) return [];
     return productClasses.find(
-      (productClass) => productClass.name === newResultTableRecord.type
+      (productClass) => productClass.name === resultTableRecord.type
     ).fields;
   };
 
   return (
     <div className={styles.createNewRequestTableWrapper}>
-      {newResultTable.fields.map((field, key) => (
+      <input
+        type="text"
+        value={resultTable.name}
+        onChange={(e) => onTableNameChange(e.target.value)}
+      />
+      {resultTable.fields.map((field, key) => (
         <div className={styles.createNewRequestRecord}>
           <div>
-            <button className={styles.recordXButton}>x</button>
+            <button
+              className={styles.recordXButton}
+              onClick={() => handleRemoveField(key)}
+            >
+              x
+            </button>
           </div>
           <div className={styles.recordName}>{field.name}</div>
           <div>{"from"}</div>
@@ -71,14 +107,19 @@ const CreateNewRequestTable = (props) => {
         </div>
       ))}
       <div className={styles.newRecordWrapper}>
-        <button className={styles.recordXButton}>+</button>
-        <input className={styles.newRequestRecordNameInput} type="text" />
+        <button className={styles.recordXButton} onClick={addNewRecord}>
+          +
+        </button>
+        <input
+          className={styles.newRequestRecordNameInput}
+          type="text"
+          onChange={(e) => onChangedName(e.target.value)}
+          value={resultTableRecord.name}
+        />
 
         <Dropdown className={styles.newRecordWrapperDropdown}>
           <Dropdown.Toggle variant="success" id="dropdown-basic">
-            {newResultTableRecord.type
-              ? newResultTableRecord.type
-              : "Choose type"}
+            {resultTableRecord.type ? resultTableRecord.type : "Choose type"}
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
@@ -93,11 +134,11 @@ const CreateNewRequestTable = (props) => {
           </Dropdown.Menu>
         </Dropdown>
 
-        {newResultTableRecord.type && (
+        {resultTableRecord.type && (
           <Dropdown>
             <Dropdown.Toggle variant="success" id="dropdown-basic">
-              {newResultTableRecord.subtype
-                ? newResultTableRecord.subtype
+              {resultTableRecord.subtype
+                ? resultTableRecord.subtype
                 : "Choose subtype"}
             </Dropdown.Toggle>
 
@@ -114,6 +155,7 @@ const CreateNewRequestTable = (props) => {
           </Dropdown>
         )}
       </div>
+      {/* <button onClick={}>Add new table</button> */}
     </div>
   );
 };
