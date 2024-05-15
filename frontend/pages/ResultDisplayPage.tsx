@@ -9,6 +9,7 @@ const ResultDisplayPage: NextPage = () => {
   const [data, setData] = useState<IDisplayDataRecord[]>(
     [] as IDisplayDataRecord[]
   );
+  const [tabSelected, setTabSelected] = useState<string>("");
 
   const router = useRouter();
 
@@ -27,6 +28,7 @@ const ResultDisplayPage: NextPage = () => {
     const response = await getData(format, types);
     const data = formatedData(response);
     setData(data);
+    setTabSelected(data?.[0]?.name || "");
   };
 
   const handleBack = () => {
@@ -52,20 +54,58 @@ const ResultDisplayPage: NextPage = () => {
     }
   };
 
+  const toggleTabSelected = (name: string) => {
+    setTabSelected(name);
+  };
+
   return (
     <div className={styles.mainDiv}>
       <div>
-        <button onClick={handleBack}>Return</button>
+        <button className={styles.returnBtn} onClick={handleBack}>
+          <span>Return</span>
+          <svg
+            viewBox="-5 -5 110 110"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
+          </svg>
+        </button>
         <h1 className={styles.resultDisplayTitle}>Generated Data</h1>
       </div>
       {data && (
-        <div className={styles.resultCodeDisplay}>
-          {data.map((record) => (
-            <div key={record.name}>
-              <p className={styles.resultDisplay}>{record.name}</p>
-              <pre className={styles.resultPDisplay}>{record.response}</pre>
-            </div>
-          ))}
+        <div className={styles.tabsContainer}>
+          <div className={styles.resultAllTab}>
+            {data.map((record) => (
+              <div
+                key={record.name}
+                className={
+                  tabSelected == record.name.toString()
+                    ? styles.activeTabs
+                    : styles.tabs
+                }
+                onClick={() => toggleTabSelected(record.name)}
+              >
+                {record.name}
+              </div>
+            ))}
+          </div>
+          <div className={styles.contentTabs}>
+            {data.map((record) => (
+              <div
+                key={record.name}
+                className={
+                  tabSelected == record.name.toString()
+                    ? styles.activeContent
+                    : styles.content
+                }
+              >
+                <pre className={styles.resultContentCode}>
+                  {record.response}
+                </pre>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
