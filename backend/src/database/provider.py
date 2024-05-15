@@ -1,20 +1,23 @@
 import logging
+import os
 from time import sleep
 
-from src.utils.config_parser import parser
 from playhouse.postgres_ext import PostgresqlExtDatabase
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 
 class DatabaseProvider:
     def __init__(self):
         self.logger = logging.getLogger("DatabaseProvider")
         self.is_connected = False
-        self.db_name = parser.get_attr("database", "db_name")
-        self.db_user = parser.get_attr("database", "user")
-        self.db_password = parser.get_attr("database", "password")
-        self.db_host = parser.get_attr("database", "host")
-        self.db_port = parser.get_attr("database", "port")
-        self.connect_attempts = int(parser.get_attr("database", "connect_attempts"))
+        self.db_name = os.getenv("POSTGRES_DB")
+        self.db_user = os.getenv("POSTGRES_USER")
+        self.db_password = os.getenv("POSTGRES_PASSWORD")
+        self.db_host = os.getenv("POSTGRES_HOST")
+        self.db_port = os.getenv("POSTGRES_PORT")
+        self.connect_attempts = 5
         self.db = PostgresqlExtDatabase(database=self.db_name, user=self.db_user, password=self.db_password,
                                         host=self.db_host, port=self.db_port, autorollback=True)
         self.logger.info("Initializing connection to database")

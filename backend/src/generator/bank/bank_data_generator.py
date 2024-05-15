@@ -12,11 +12,11 @@ from src.generator.base_generator import BaseGenerator
 fields = ["iban", "bank_name", "bank_address"]
 
 
-class IBANModel(BaseModel):
+class BankDataModel(BaseModel):
     iban: str = None
 
 
-class IBANGenerator(BaseGenerator):
+class BankDataGenerator(BaseGenerator):
     def __init__(self):
         super().__init__()
         self.logger = logging.getLogger('BankDataGenerator')
@@ -48,4 +48,4 @@ class IBANGenerator(BaseGenerator):
                 pass
 
 
-iban_generator = IBANGenerator()
+bank_data_generator = BankDataGenerator()

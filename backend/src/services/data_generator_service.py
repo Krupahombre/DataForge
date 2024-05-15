@@ -1,11 +1,7 @@
-from typing import List
 import logging
 
-from fastapi import HTTPException
-from src.utils.enums.generators import Generators
-from src.services.iban.iban_generator import iban_generator
-from src.services.person.person_generator import person_generator
-from starlette import status
+
+from src.generator import GENERATOR_FIELDS, GENERATORS
 
 from src.server.models.generator_model import GeneratorModel, Table, Field
 
@@ -17,25 +13,14 @@ def get_available_generators_list() -> dict[str, [list[str]]]:
     return GENERATOR_FIELDS
 
 
-def generate_data(generator_data: GeneratorModel):
-    request_types = generator_data.generators_list
-    records_to_generate = generator_data.records
+def generate_data(request: GeneratorModel):
+    output = {}
+    records_num = request.records
+    tables = request.tables
+    for table in tables:
+        output.update(handle_table(table, records_num))
+    return output
 
-    if request_types is None:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Generators list cannot be empty!"
-        )
-    gen_types = []
-    for generator in generators.keys():
-        supported_datatypes = generator.get_supported_types()
-        for sup_type in supported_datatypes:
-            if sup_type in request_types:
-                request_types.remove(sup_type)
-                gen_types.append(sup_type)
-        if gen_types:
-            generators[generator] = gen_types
-            gen_types = []
 
 def handle_table(table: Table, records_num: int):
     columns = {}

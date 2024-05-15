@@ -69,10 +69,13 @@ class PersonGenerator(BaseGenerator):
         return random.choice(list(GenderEnum)).name.lower()
 
     @staticmethod
-    def generate_birthdate() -> datetime:
-        start_date = datetime.date(1950, 1, 1)
-        end_date = datetime.date(2001, 12, 31)
-        return start_date + datetime.timedelta(days=random.randint(0, (end_date - start_date).days))
+    def generate_birthdate(records_to_generate: int) -> list:
+        out = []
+        for i in range(0, records_to_generate):
+            start_date = datetime.date(1950, 1, 1)
+            end_date = datetime.date(2001, 12, 31)
+            out.append(start_date + datetime.timedelta(days=random.randint(0, (end_date - start_date).days)))
+        return out
 
     def generate_sex(self, records_to_generate: int) -> list:
         out = []
