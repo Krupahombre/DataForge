@@ -13,3 +13,14 @@ GENERATORS = {
     "bank": bank_data_generator,
     "person": person_generator,
 }
+
+FIELD_TYPES = {
+    "person": {
+        "name": str,
+        "last_name": str,
+        "sex": str,
+        "birth_date": str,
+        "pesel": int,
+        "email": str,
+    }
+}
