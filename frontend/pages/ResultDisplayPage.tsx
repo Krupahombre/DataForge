@@ -27,14 +27,38 @@ const ResultDisplayPage: NextPage = () => {
       const formatFilters = JSON.parse(stringFormatFilters);
 
       const response = await getData(requestTables, formatFilters);
-      const data = formatedData(response);
-      setData(data);
-      setTabSelected(data?.[0]?.name || "");
+      if (stringFormatFilters == `"MySQL"`) {
+        const data = formatedData(response);
+        setData(data);
+        setTabSelected(data?.[0]?.name || "");
+      } else if (stringFormatFilters == `"JSON"`) {
+        const data = formatedJsonData(response);
+        setData(data);
+        setTabSelected(data?.[0]?.name || "");
+      }
     }
   };
 
   const handleBack = () => {
     router.push("/");
+  };
+
+  const formatedJsonData = (response: IDisplayDataRecord[]) => {
+    if (response) {
+      const formatedStringData = response.map((record) => {
+        const formattedResponse = JSON.stringify(
+          JSON.parse(record.response),
+          null,
+          2
+        );
+
+        return {
+          name: record.name,
+          response: formattedResponse,
+        };
+      });
+      return formatedStringData;
+    }
   };
 
   const formatedData = (response: IDisplayDataRecord[]) => {
