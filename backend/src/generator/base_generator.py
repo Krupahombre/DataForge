@@ -12,5 +12,5 @@ class BaseGenerator:
     def get_name(self) -> str:
         pass
 
-    def generate(self, field: str, records: int, metadata: list = None) -> list:
+    def generate(self, field: str, records: int, seed_list: list = None, metadata: list = None) -> list:
         pass

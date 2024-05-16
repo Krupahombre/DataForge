@@ -69,3 +69,6 @@ class IBANGenerator:
         result = iban_pl.replace(self.iban_prefix, checksum)
 
         return result
+
+
+iban_generator = IBANGenerator()
