@@ -15,6 +15,7 @@ request_metadate = {}
 
 
 def get_available_generators_list() -> dict[str, [list[str]]]:
+    print(bank_data_generator.generate_name([1, 12, 3]))
     return GENERATOR_FIELDS
 
 
@@ -31,7 +32,7 @@ def handle_table(table: Table, records_num: int):
     columns = {}
     person_fields = [field for field in table.fields if field.type.startswith("person")]
     columns.update(handle_person_fields(person_fields, records_num))
-    bank_fields = [field for field in table.fields if field.type == "bank"]
+    bank_fields = [field for field in table.fields if field.type.startswith("bank")]
     columns.update(handle_bank_fields(bank_fields, records_num))
     other_fields = [field for field in table.fields if
                     not field.type.startswith("person") and not field.type.startswith("bank")]
@@ -59,12 +60,17 @@ def handle_bank_fields(fields: list[Field], records_num: int):
     if "name" in field_types:
         names = handle_field(generator, "bank:name", fields, records_num, seed_list, None)
     if "address" in field_types:
-        names = handle_field(generator, "bank:address", fields, records_num, seed_list, None)
+        addresses = handle_field(generator, "bank:address", fields, records_num, seed_list, None)
     if "number" in field_types:
-        names = handle_field(generator, "bank:number", fields, records_num, seed_list, None)
+        numbers = handle_field(generator, "bank:number", fields, records_num, seed_list, None)
     if "iban" in field_types:
-        names = handle_field(generator, "bank:iban", fields, records_num, seed_list, [numbers])
-    return []
+        if not numbers:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid bank data field config for iban (number)"
+            )
+        ibans = handle_field(generator, "bank:iban", fields, records_num, seed_list, [numbers])
+    return {**names, **addresses, **numbers, **ibans}
 
 
 def handle_person_fields(fields: list[Field], records_num: int):
