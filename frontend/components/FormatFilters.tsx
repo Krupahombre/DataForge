@@ -15,7 +15,7 @@ const TypeFilters: React.FC<IFiltersProps> = ({ filters, setFilters }) => {
   };
 
   return (
-    <div>
+    <div className={styles.chooseFiltersLabelWrapper}>
       <h1 className={styles.chooseFiltersLabel}>Choose a data format:</h1>
       <div className={styles.chooseFilterBox}>
         {filters.map((filter, key) => (
