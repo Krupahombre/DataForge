@@ -1,12 +1,10 @@
-import datetime
+import json
 import logging
 
 from fastapi import HTTPException
 from starlette import status
 
-from src.generator import FIELD_TYPES
 from src.utils.enums.response_format import ResponseFormat
-from src.utils.enums.sql_templates import PostgreSQLTemplates, MySQLTemplates
 
 logger = logging.getLogger("QueryGeneratorService")
 
@@ -30,5 +28,5 @@ def generate_json(result: dict, records_num: int, type: ResponseFormat) -> dict[
                 obj[element[0]] = value
             objects.append(obj)
             id_holder += 1
-        output[table] = objects
+        output[table] = json.dumps(objects)
     return output
