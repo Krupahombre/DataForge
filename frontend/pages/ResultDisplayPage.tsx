@@ -16,21 +16,21 @@ const ResultDisplayPage: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const currentUrl = window.location.href;
-
-    const urlParams = new URLSearchParams(currentUrl);
-
-    const format = urlParams.get("format");
-    const types = urlParams.getAll("type");
-
-    fetchData(format, types);
+    fetchData();
   }, []);
 
-  const fetchData = async (format: string, types: string[]) => {
-    const response = await getData(format, types);
-    const data = formatedData(response);
-    setData(data);
-    setTabSelected(data?.[0]?.name || "");
+  const fetchData = async () => {
+    const stringRequestTables = localStorage.getItem("requestTables");
+    const stringFormatFilters = localStorage.getItem("formatFilters");
+    if (stringRequestTables && stringFormatFilters) {
+      const requestTables = JSON.parse(stringRequestTables);
+      const formatFilters = JSON.parse(stringFormatFilters);
+
+      const response = await getData(requestTables, formatFilters);
+      const data = formatedData(response);
+      setData(data);
+      setTabSelected(data?.[0]?.name || "");
+    }
   };
 
   const handleBack = () => {

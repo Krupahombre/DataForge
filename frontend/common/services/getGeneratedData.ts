@@ -1,17 +1,22 @@
 import axios from "axios";
 import { API_URL } from "../constans";
 import IDisplayDataRecord from "../models/IDisplayDataRecord";
+import { IRequestTable } from "../models/IRequestTable";
 
 const getData = async (
-  format: string,
-  types: string[]
+  requestTables: IRequestTable[],
+  formatFilters: string
 ): Promise<IDisplayDataRecord[]> => {
-  console.log(types);
-  const types_ = ["person", "iban"];
-
   const body = {
-    generators_list: types,
-    records: 2,
+    tables: requestTables.map((table) => ({
+      name: table.name,
+      fields: table.fields.map((field) => ({
+        name: field.name,
+        type: `${field.type}:${field.subtype}`,
+      })),
+    })),
+    records: 10,
+    format: formatFilters.toLowerCase(),
   };
 
   const response = await axios.post(API_URL, body);

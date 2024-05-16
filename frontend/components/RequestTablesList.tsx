@@ -4,9 +4,9 @@ import { IRequestTable } from "../common/models/IRequestTable";
 
 const RequestTablesList = (props) => {
   const tables: IRequestTable[] = props.requestTables;
-  const [activeTable, setActiveTable] = useState<IRequestTable>(undefined);
+  // const [activeTable, setActiveTable] = useState<IRequestTable>(undefined);
 
-  const handleClick = () => {};
+  // const handleClick = () => {};
 
   return tables.length === 0 ? null : (
     <div className={styles.requestTablesListWrapper}>

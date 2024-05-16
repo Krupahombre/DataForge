@@ -9,24 +9,9 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import RequestTablesList from "../components/RequestTablesList";
 import CreateNewRequestTable from "../components/CreateNewRequestTable";
+import { getProductClasses } from "../common/services/getProductClasses";
 
-const defaultProductClasses: IProductClass[] = [
-  {
-    name: "Person",
-    fields: ["name", "surname", "age", "email"],
-  },
-  {
-    name: "IBAN",
-    fields: ["iban", "country", "bank"],
-  },
-];
-
-const getTypes = (): IFilter[] => {
-  return [
-    { name: "person", selected: false },
-    { name: "iban", selected: false },
-  ];
-};
+const defaultProductClasses: IProductClass[] = [];
 
 const getFormat = (): IFilter[] => {
   return [
@@ -39,7 +24,6 @@ const HeroPage: NextPage = () => {
   const [formatFilters, setFormatFilters] = useState<IFilter[]>(
     [] as IFilter[]
   );
-  const [typeFilters, setTypeFilters] = useState<IFilter[]>([] as IFilter[]);
   const [requestTables, setRequestTables] = useState<IRequestTable[]>(
     [] as IRequestTable[]
   );
@@ -50,26 +34,29 @@ const HeroPage: NextPage = () => {
   const router = useRouter();
 
   const handleGenerate = () => {
-    const type = typeFilters.filter((column) => column.selected);
-    const format = formatFilters.find((type) => type.selected)?.name;
-
     if (isFormFilled()) {
-      const queryString =
-        `a=b&format=${format}&` +
-        type.map((value) => `type=${value.name}`).join("&");
-      router.push(`/ResultDisplayPage?${queryString}`);
+      localStorage.setItem("requestTables", JSON.stringify(requestTables));
+      localStorage.setItem(
+        "formatFilters",
+        JSON.stringify(formatFilters.find((column) => column.selected).name)
+      );
+      router.push(`/ResultDisplayPage`);
+    } else {
+      alert("Please create at least one table and select a format!");
     }
   };
 
   useEffect(() => {
+    getProductClasses().then((data) => {
+      setProductClasses(data);
+    });
     setFormatFilters(getFormat());
-    setTypeFilters(getTypes());
   }, []);
 
   const isFormFilled = () => {
     return (
       formatFilters.some((column) => column.selected) &&
-      typeFilters.some((type) => type.selected)
+      requestTables.length > 0
     );
   };
 
