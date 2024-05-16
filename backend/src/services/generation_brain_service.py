@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from starlette import status
 
 from src.services.data_generator_service import generate_data
+from src.services.json_generator_service import generate_json
 
 from src.services.query_generator_service import generate_sql_query
 
@@ -20,6 +21,8 @@ def generate_data_with_response_format(params: GeneratorModel):
     result_data = generate_data(params)
     if params.format == ResponseFormat.POSTGRESQL or params.format == ResponseFormat.MYSQL:
         result_query = generate_sql_query(result_data, params.records, params.format)
+    elif params.format == ResponseFormat.JSON:
+        result_query = generate_json(result_data, params.records, params.format)
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

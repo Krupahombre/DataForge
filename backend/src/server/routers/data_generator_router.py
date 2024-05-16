@@ -3,7 +3,7 @@ from starlette import status
 
 from src.services.data_generator_service import get_available_generators_list
 
-from src.services.generator_brain_service import generate_data_with_response_format
+from src.services.generation_brain_service import generate_data_with_response_format
 
 from src.server.models.generator_model import GeneratorModel
 
