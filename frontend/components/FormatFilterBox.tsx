@@ -15,7 +15,7 @@ const SquareBox = (props) => {
       style={{ backgroundColor: color }}
       onClick={handleClick}
     >
-      <h1>{columnName}</h1>
+      <h3>{columnName}</h3>
     </div>
   );
 };
