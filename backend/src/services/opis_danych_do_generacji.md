@@ -1,10 +1,10 @@
 - osoba #
   - imię i nazwisko
   - data urodzenia
-    - pesel
-  - numer dowodu / paszport
-  - miejsce urodzenia
-  - telefon
+  - pesel
+  - numer dowodu / paszport ?
+  - miejsce urodzenia ?
+  - telefon ?
   - email
 
 - dane demograficzne #
@@ -23,6 +23,7 @@
   - staż w pracy
   - zarobki
   - stanowisko
+  - ilość pracowników
 
 - bank
   - który bank
@@ -44,13 +45,3 @@
   - vin
   - marka
   - rocznik
-
-- dane - relacje interpersonalne
-  - rodzina
-  - znajomi
-  - partnerzy
-
-- historia edukacyjna
-  - ukończona szkoła
-  - stopień
-  - specjalizacja

@@ -1,13 +1,16 @@
+import logging
 import random
 
 from unidecode import unidecode
+
+from src.database.generic_dal import get_all
+from src.database.models.email_domains import EmailDomains
 
 
 class EmailGenerator:
     def __init__(self):
         self.domains_file = 'data/email_domains.csv'
-        # self.domains_file = '/code/src/services/person/data/email_domains.csv'
-        self.domains = []
+        self.domains = get_all(EmailDomains)
 
     @staticmethod
     def load_data_from_txt(file_path: str) -> list[str]:
@@ -19,7 +22,7 @@ class EmailGenerator:
         return random.choice(lines).strip()
 
     def generate_email(self, first_name: str, last_name: str) -> str:
-        random_domain = self.get_random_line(self.domains)
+        random_domain = random.choice(self.domains).domain
         f_name_decoded = unidecode(first_name).strip().replace(" ", "_").replace("-", "_").lower()
         l_name_decoded = unidecode(last_name).strip().replace(" ", "_").replace("-", "_").lower()
 
