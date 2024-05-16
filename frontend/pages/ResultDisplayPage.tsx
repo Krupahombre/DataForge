@@ -4,6 +4,7 @@ import IDisplayDataRecord from "../common/models/IDisplayDataRecord";
 import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";
+import NavBar from "../components/NavBar";
 
 const ResultDisplayPage: NextPage = () => {
   const [data, setData] = useState<IDisplayDataRecord[]>(
@@ -69,6 +70,7 @@ const ResultDisplayPage: NextPage = () => {
 
   return (
     <div className={styles.mainDiv}>
+      <NavBar />
       <div className={styles.gridContainer}>
         <div>
           <button className={styles.returnBtn} onClick={handleBack}>
