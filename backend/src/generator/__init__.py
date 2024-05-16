@@ -22,5 +22,11 @@ FIELD_TYPES = {
         "birth_date": str,
         "pesel": int,
         "email": str,
+    },
+    "bank": {
+        "name": str,
+        "address": str,
+        "number": str,
+        "iban": str,
     }
 }

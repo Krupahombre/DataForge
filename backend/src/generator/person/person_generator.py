@@ -46,7 +46,7 @@ class PersonGenerator(BaseGenerator):
     def get_name(self) -> str:
         return "person"
 
-    def generate(self, field: str, records_to_generate: int, metadata: list = None) -> list:
+    def generate(self, field: str, records_to_generate: int, seed_list: list = None, metadata: list = None) -> list:
         if field not in fields:
             logger.exception(f"Unsupported field {field}")
             raise Exception(f"Unsupported field {field}")

@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS "EmailDomains" (
 
 CREATE TABLE IF NOT EXISTS "BankProviders" (
     "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "internal_id" VARCHAR(10) NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "number" VARCHAR(10) NOT NULL,
     "address" VARCHAR(255) NOT NULL
