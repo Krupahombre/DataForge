@@ -10,6 +10,7 @@ const ResultDisplayPage: NextPage = () => {
     [] as IDisplayDataRecord[]
   );
   const [tabSelected, setTabSelected] = useState<string>("");
+  const [copied, setCopied] = useState(false);
 
   const router = useRouter();
 
@@ -58,20 +59,33 @@ const ResultDisplayPage: NextPage = () => {
     setTabSelected(name);
   };
 
+  const copyToClipboard = (record) => {
+    navigator.clipboard.writeText(record);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 1500);
+  };
+
   return (
     <div className={styles.mainDiv}>
-      <div>
-        <button className={styles.returnBtn} onClick={handleBack}>
-          <span>Return</span>
-          <svg
-            viewBox="-5 -5 110 110"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
-          </svg>
-        </button>
-        <h1 className={styles.resultDisplayTitle}>Generated Data</h1>
+      <div className={styles.gridContainer}>
+        <div>
+          <button className={styles.returnBtn} onClick={handleBack}>
+            <span>Return</span>
+            <svg
+              viewBox="-5 -5 110 110"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
+            </svg>
+          </button>
+        </div>
+        <div>
+          <h1 className={styles.resultDisplayTitle}>Generated Data</h1>
+        </div>
+        <div></div>
       </div>
       {data && (
         <div className={styles.tabsContainer}>
@@ -100,9 +114,19 @@ const ResultDisplayPage: NextPage = () => {
                     : styles.content
                 }
               >
-                <pre className={styles.resultContentCode}>
-                  {record.response}
-                </pre>
+                <div className={styles.btnDiv}>
+                  <button
+                    className={styles.copyBtn}
+                    onClick={() => copyToClipboard(record.response)}
+                  >
+                    {copied ? "Copied" : "Copy to Clipboard"}
+                  </button>
+                </div>
+                <div className={styles.responseDiv}>
+                  <pre className={styles.resultContentCode}>
+                    {record.response}
+                  </pre>
+                </div>
               </div>
             ))}
           </div>

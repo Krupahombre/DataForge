@@ -262,4 +262,56 @@
   padding: 0px 10px;
   border-radius: 5px;
   white-space: pre-wrap;
+  margin-top: 0px;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: 20% 60% 20%;
+  justify-content: center;
+  align-items: center;
+}
+
+.leftColumn,
+.rightColumn {
+  width: 20%;
+}
+
+.middleColumn {
+  width: 60%;
+}
+
+.copyBtn {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  height: 36px;
+  width: 320px;
+  line-height: 34px;
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #4f6f52;
+  transition: background-color 0.2s ease-in-out 0s, opacity 0.2s ease-in-out 0s;
+  padding: 0 18px;
+}
+
+.copyBtn:hover {
+  color: #ffffff;
+  background-color: #3b523d;
+}
+
+.btnDiv {
+  margin: 0px;
+  margin-top: 5px;
+  padding: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.responseDiv {
+  margin-top: 0px;
 }
