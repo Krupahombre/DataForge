@@ -33,7 +33,8 @@ def handle_table(table: Table, records_num: int):
     person_fields = [field for field in table.fields if field.type.startswith("person")]
     columns.update(handle_person_fields(person_fields, records_num))
     bank_fields = [field for field in table.fields if field.type.startswith("bank")]
-    columns.update(handle_bank_fields(bank_fields, records_num))
+    if bank_fields:
+        columns.update(handle_bank_fields(bank_fields, records_num))
     other_fields = [field for field in table.fields if
                     not field.type.startswith("person") and not field.type.startswith("bank")]
     for field in other_fields:
