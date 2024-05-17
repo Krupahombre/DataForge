@@ -70,6 +70,17 @@ const HeroPage: NextPage = () => {
     setRequestTables([...requestTables, newTable]);
   };
 
+  const removeTable = (table: IRequestTable) => {
+    const newTables = requestTables.filter((t) => t.name !== table.name);
+    setRequestTables(newTables);
+    localStorage.setItem("requestTables", JSON.stringify(newTables));
+  }
+
+  const clearAllTables = () => {
+    localStorage.setItem("requestTables", JSON.stringify([]));
+    setRequestTables([]);
+  }
+
   return (
     <div className={styles.dataForge}>
       <div className={styles.heroBox}>
@@ -83,7 +94,7 @@ const HeroPage: NextPage = () => {
               productClasses={productClasses}
               addTable={addTable}
             />
-            <RequestTablesList requestTables={requestTables} />
+            <RequestTablesList requestTables={requestTables} clearAllTables={clearAllTables} removeTable={removeTable}/>
           </div>
         </div>
 
