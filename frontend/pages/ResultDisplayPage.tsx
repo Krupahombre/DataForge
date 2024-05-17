@@ -27,7 +27,7 @@ const ResultDisplayPage: NextPage = () => {
       const formatFilters = JSON.parse(stringFormatFilters);
 
       const response = await getData(requestTables, formatFilters);
-      if (stringFormatFilters == `"MySQL"`) {
+      if (stringFormatFilters == `"MySQL"` || stringFormatFilters == `"PSQL"` ) {
         const data = formatedData(response);
         setData(data);
         setTabSelected(data?.[0]?.name || "");

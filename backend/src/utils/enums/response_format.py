@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class ResponseFormat(Enum):
-    POSTGRESQL = 'postgresql'
+    POSTGRESQL = 'psql'
     MYSQL = 'mysql'
     JSON = 'json'
     CSV = 'csv'
