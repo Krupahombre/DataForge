@@ -13,7 +13,7 @@ const RequestTablesList = ({requestTables, clearAllTables, removeTable}) => {
 
   return requestTables.length === 0 ? null : (
     <div className={styles.requestTablesListWrapper}>
-      <h2>Request classes:</h2>
+      <h2>{"Your tables:"}</h2>
       <div 
         className={styles.displayResultTablesClearPanel} 
         onClick={() => clearAllTables()}

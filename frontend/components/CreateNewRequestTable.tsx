@@ -116,7 +116,7 @@ const CreateNewRequestTable = (props) => {
   return (
     <div className={styles.wymyslyKleksa}>
       <div className={styles.tablenameInputWrapper}>
-        {"Your Table Name:"}
+        <h2>{"New table:"}</h2>
         <input
           className={styles.tableNameInput}
           placeholder="Fill table name"
