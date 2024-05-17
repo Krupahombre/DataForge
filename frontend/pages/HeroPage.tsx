@@ -48,6 +48,10 @@ const HeroPage: NextPage = () => {
   };
 
   useEffect(() => {
+    const stringRequestTables = localStorage.getItem("requestTables");
+    if (stringRequestTables) {
+      setRequestTables(JSON.parse(stringRequestTables));
+    }
     getProductClasses().then((data) => {
       setProductClasses(data);
     });
@@ -62,6 +66,7 @@ const HeroPage: NextPage = () => {
   };
 
   const addTable = (newTable: IRequestTable) => {
+    localStorage.setItem("requestTables", JSON.stringify([...requestTables, newTable]));
     setRequestTables([...requestTables, newTable]);
   };
 
