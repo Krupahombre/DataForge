@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import RequestTablesList from "../components/RequestTablesList";
 import CreateNewRequestTable from "../components/CreateNewRequestTable";
 import { getProductClasses } from "../common/services/getProductClasses";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const defaultProductClasses: IProductClass[] = [];
 
@@ -82,12 +83,8 @@ const HeroPage: NextPage = () => {
   }
 
   return (
-    <div className={styles.dataForge}>
+    // <div className={styles.dataForge}>
       <div className={styles.heroBox}>
-        <div>
-          <h1 className={styles.heroLabel}>Data Forge</h1>
-          <h2 className={styles.heroSubLabel}>Generate your data!</h2>
-        </div>
         <div>
           <div className={styles.userInputWrapper}>
             <CreateNewRequestTable
@@ -103,12 +100,12 @@ const HeroPage: NextPage = () => {
             filters={formatFilters}
             setFilters={setFormatFilters}
           />
-          <button onClick={handleGenerate} className={styles.generateButton}>
+          <button onClick={handleGenerate} className={styles.generateButton + " btn btn-dark"}>
             Generate
           </button>
         </div>
       </div>
-    </div>
+    // </div>
   );
 };
 export default HeroPage;

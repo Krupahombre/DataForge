@@ -10,20 +10,6 @@ interface IRequestTablesListProps {
 }
 
 const RequestTablesList = ({requestTables, clearAllTables, removeTable}) => {
-  // const [activeTable, setActiveTable] = useState<IRequestTable>(undefined);
-
-  // const handleClick = () => {};
-
-  // const handleClear = () => {
-  //   localStorage.setItem("requestTables", JSON.stringify([]));
-  //   window.location.reload();
-  // }
-
-  // const removeTable = (table: IRequestTable) => {
-  //   const newTables = tables.filter((t) => t.name !== table.name);
-  //   localStorage.setItem("requestTables", JSON.stringify(newTables));
-  //   window.location.reload();
-  // }
 
   return requestTables.length === 0 ? null : (
     <div className={styles.requestTablesListWrapper}>
