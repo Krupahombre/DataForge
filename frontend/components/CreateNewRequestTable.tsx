@@ -9,6 +9,18 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { IProductClass } from "../common/models/IProductClass";
 
+interface IErrors{
+  tableNameError: boolean;
+  recordNameError: boolean;
+  noListItemsError: boolean;
+}
+
+const defaultErrors: IErrors = {
+  tableNameError: false,
+  recordNameError: false,
+  noListItemsError: false,
+};
+
 const defaultTable: IRequestTable = {
   name: "",
   fields: [],
@@ -22,6 +34,7 @@ const defaultResultTableRecord: IResultTableRecord = {
 
 const CreateNewRequestTable = (props) => {
   const { productClasses, addTable } = props;
+  const [error, setError] = useState<IErrors>(defaultErrors);
   const [resultTable, setResultTable] = useState<IRequestTable>(defaultTable);
 
   const [resultTableRecord, setResultTableRecord] =
@@ -32,10 +45,15 @@ const CreateNewRequestTable = (props) => {
   }, [resultTableRecord.type]);
 
   const onSubmitNewTable = () => {
-    if (resultTable.name === "" || resultTable.fields.length === 0) return;
+    if (resultTable.name === "" || resultTable.fields.length === 0) {
+      setError({ ...error, tableNameError: resultTable.name === "", noListItemsError: resultTable.fields.length === 0 });
+      return;
+    }
+
     addTable(resultTable);
     setResultTable(defaultTable);
     setResultTableRecord(defaultResultTableRecord);
+    setError(defaultErrors);
   };
 
   const onTableNameChange = (name: string) => {
@@ -71,13 +89,16 @@ const CreateNewRequestTable = (props) => {
       resultTableRecord.name === "" ||
       resultTableRecord.type === "" ||
       resultTableRecord.subtype === ""
-    )
+    ){
+      setError({ ...error, recordNameError: true });
       return;
+    }
     setResultTable({
       ...resultTable,
       fields: [...resultTable.fields, resultTableRecord],
     });
     setResultTableRecord(defaultResultTableRecord);
+    setError({ ...error, recordNameError: false });
   };
 
   const handleRemoveField = (index) => {
@@ -102,9 +123,10 @@ const CreateNewRequestTable = (props) => {
           type="text"
           value={resultTable.name}
           onChange={(e) => onTableNameChange(e.target.value)}
+          style={error.tableNameError ? { border: "1px solid red" } : {}}
         />
       </div>
-      <div className={styles.createNewRequestTableWrapper}>
+      <div className={styles.createNewRequestTableWrapper} style={error.noListItemsError ? { border: "1px solid red" } : {}}>
         {resultTable.fields.map((field, key) => (
           <div className={styles.createNewRequestRecord}>
             <TrashIcon
@@ -125,6 +147,7 @@ const CreateNewRequestTable = (props) => {
             type="text"
             onChange={(e) => onChangedName(e.target.value)}
             value={resultTableRecord.name}
+            style={error.recordNameError ? { border: "1px solid red" } : {}}
           />
 
           <Dropdown className={styles.newRecordWrapperDropdown}>

@@ -265,6 +265,7 @@
   justify-content: left;
   align-items: left;
   font-size: 1rem;
+  height: 15rem;
 }
 
 .newRecordWrapperDropdown {
@@ -276,12 +277,17 @@
   margin-left: 20px;
   margin-right: 10px;
   width: 10rem;
+  height: 2.5rem;
 }
 
 .newRequestSubmitBtnWrapper {
   display: flex;
   justify-content: right;
   align-items: center;
+}
+
+.newRecordAddBtn{
+  height: 2.5rem;
 }
 
 .newRequestSubmitBtn {
