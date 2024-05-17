@@ -29,7 +29,7 @@ def generate_sql_query(result: dict, records_num: int, type: ResponseFormat) -> 
         columns = []
         
         for key, values in result_gen.items():
-            column_name = '"' + key[0] + '"'
+            column_name = key[0]
             field_space, field_name = key[1].split(':')
             field_type = FIELD_TYPES[field_space][field_name]
 
@@ -43,7 +43,10 @@ def generate_sql_query(result: dict, records_num: int, type: ResponseFormat) -> 
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail=f"Unsupported field type: {field_type}"
                 )
-
+            if template == PostgreSQLTemplates:
+                column_name = '"' + key[0] + '"'
+            elif template == MySQLTemplates:
+                column_name = '`' + key[0] + '`'
             columns.append(column_name)
             definitions.append(key_type)
         definitions_str = '+'.join(definitions).replace('+', ', ')
