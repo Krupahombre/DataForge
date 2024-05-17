@@ -7,6 +7,7 @@ import {
 import Dropdown from "react-bootstrap/Dropdown";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { TrashIcon } from "@heroicons/react/24/solid";
+import { IProductClass } from "../common/models/IProductClass";
 
 const defaultTable: IRequestTable = {
   name: "",
@@ -48,6 +49,18 @@ const CreateNewRequestTable = (props) => {
   const onSelectedSubtype = (subtype: string) => {
     setResultTableRecord({ ...resultTableRecord, subtype });
   };
+
+  const addAllSubtypes = () => {
+    const productClass:IProductClass = productClasses.find((productClass)=> productClass.name === resultTableRecord.type);
+    const records:IResultTableRecord[] = productClass.fields.map((field) => ({
+      name: field,
+      type: resultTableRecord.type,
+      subtype: field,
+    }));
+    
+    setResultTable({ ...resultTable, fields: [...resultTable.fields, ...records] })
+    onSelectedType("");
+  }
 
   const onChangedName = (name: string) => {
     setResultTableRecord({ ...resultTableRecord, name });
@@ -148,6 +161,9 @@ const CreateNewRequestTable = (props) => {
                     {productClass}
                   </Dropdown.Item>
                 ))}
+                <Dropdown.Item onClick={() => addAllSubtypes()}>
+                  {"Add all"}
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           )}
