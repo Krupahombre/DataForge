@@ -31,7 +31,8 @@ def generate_data(request: GeneratorModel):
 def handle_table(table: Table, records_num: int):
     columns = {}
     person_fields = [field for field in table.fields if field.type.startswith("person")]
-    columns.update(handle_person_fields(person_fields, records_num))
+    if person_fields:
+        columns.update(handle_person_fields(person_fields, records_num))
     bank_fields = [field for field in table.fields if field.type.startswith("bank")]
     if bank_fields:
         columns.update(handle_bank_fields(bank_fields, records_num))
