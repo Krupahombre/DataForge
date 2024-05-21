@@ -277,7 +277,7 @@
   align-items: center;
 }
 
-.newRecordAddBtn{
+.newRecordAddBtn {
   height: 2.5rem;
 }
 
@@ -435,15 +435,6 @@
   display: block;
 }
 
-.resultContentCode {
-  overflow-wrap: break-word;
-  word-break: break-word;
-  padding: 0px 10px;
-  border-radius: 5px;
-  white-space: pre-wrap;
-  margin-top: 0px;
-}
-
 .gridContainer {
   display: grid;
   grid-template-columns: 20% 60% 20%;
@@ -493,6 +484,40 @@
 
 .responseDiv {
   margin-top: 0px;
+  display: flex;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.lineNumberingDiv {
+  padding: 0px 10px 0px 10px;
+  border-radius: 0px;
+  gap: 0px;
+  margin-top: 0px;
+  text-align: right;
+  border-right: 1px solid rgb(203 213 225);
+  font-size: 0.8rem;
+}
+
+.highlighted {
+  background-color: #bbb4a2;
+}
+
+.lineNumber {
+  padding: 0;
+  gap: 0;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.resultContentCode {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  padding: 0px 10px;
+  border-radius: 5px;
+  white-space: pre-wrap;
+  margin-top: 0px;
+  font-size: 0.8rem;
 }
 
 .mainDiv {
@@ -512,7 +537,7 @@
   align-items: center;
 }
 
-.displayResultTablesClearPanel{
+.displayResultTablesClearPanel {
   display: flex;
   justify-content: center;
   align-items: center;

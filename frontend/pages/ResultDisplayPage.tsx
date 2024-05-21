@@ -27,12 +27,12 @@ const ResultDisplayPage: NextPage = () => {
       const formatFilters = JSON.parse(stringFormatFilters);
 
       const response = await getData(requestTables, formatFilters);
-      if (stringFormatFilters == `"MySQL"` || stringFormatFilters == `"PSQL"` ) {
-        const data = formatedData(response);
+      if (stringFormatFilters == `"JSON"` || stringFormatFilters == `"PSQL"`) {
+        const data = formatedJsonData(response);
         setData(data);
         setTabSelected(data?.[0]?.name || "");
-      } else if (stringFormatFilters == `"JSON"`) {
-        const data = formatedJsonData(response);
+      } else {
+        const data = formatedData(response);
         setData(data);
         setTabSelected(data?.[0]?.name || "");
       }
@@ -91,6 +91,7 @@ const ResultDisplayPage: NextPage = () => {
       setCopied(false);
     }, 1500);
   };
+  const [highlightedLine, setHighlightedLine] = useState<number | null>(null);
 
   return (
     <div className={styles.mainDiv}>
@@ -149,8 +150,33 @@ const ResultDisplayPage: NextPage = () => {
                   </button>
                 </div>
                 <div className={styles.responseDiv}>
+                  <div className={styles.lineNumberingDiv}>
+                    {record.response.split("\n").map((line, index) => (
+                      <div
+                        key={index}
+                        className={`${styles.lineNumber} ${
+                          highlightedLine === index ? styles.highlighted : ""
+                        }`}
+                        onMouseEnter={() => setHighlightedLine(index)}
+                        onMouseLeave={() => setHighlightedLine(null)}
+                      >
+                        {index + 1}
+                      </div>
+                    ))}
+                  </div>
                   <pre className={styles.resultContentCode}>
-                    {record.response}
+                    {record.response.split("\n").map((line, index) => (
+                      <div
+                        key={index}
+                        className={
+                          highlightedLine === index ? styles.highlighted : ""
+                        }
+                        onMouseEnter={() => setHighlightedLine(index)}
+                        onMouseLeave={() => setHighlightedLine(null)}
+                      >
+                        {line}
+                      </div>
+                    ))}
                   </pre>
                 </div>
               </div>
