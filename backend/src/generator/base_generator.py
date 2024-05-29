@@ -14,3 +14,6 @@ class BaseGenerator:
 
     def generate(self, field: str, records: int, seed_list: list = None, metadata: list = None) -> list:
         pass
+
+    def generate_subset(self, subset: list[str], records: int) -> list:
+        pass
