@@ -25,7 +25,7 @@ def generate_json(result: dict, records_num: int, type: ResponseFormat) -> dict[
             obj = {"id": id_holder}
             for element in result_gen:
                 value = result_gen[element][i]
-                obj[element[0]] = value
+                obj[element[0]] = str(value)
             objects.append(obj)
             id_holder += 1
         output[table] = json.dumps(objects)
