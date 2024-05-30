@@ -28,5 +28,9 @@ FIELD_TYPES = {
         "address": str,
         "number": str,
         "iban": str,
+        "card_number": str,
+        "card_security_code": str,
+        "card_expiry_date": str,
+        "card_provider": str,
     }
 }

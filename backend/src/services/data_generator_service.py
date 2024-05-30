@@ -57,6 +57,10 @@ def handle_bank_fields(fields: list[Field], records_num: int):
     numbers = {}
     names = {}
     addresses = {}
+    card_providers = {}
+    card_numbers = {}
+    card_security_codes = {}
+    card_expiry_dates = {}
     seed_list = generate_seed_values_list(records_num, bank_data_generator.get_num_of_data_records())
     field_types = [field.type.split(":")[1] for field in fields]
     if "name" in field_types:
@@ -72,7 +76,20 @@ def handle_bank_fields(fields: list[Field], records_num: int):
                 detail=f"Invalid bank data field config for iban (number)"
             )
         ibans = handle_field(generator, "bank:iban", fields, records_num, seed_list, [numbers])
-    return {**names, **addresses, **numbers, **ibans}
+    if "card_provider" in field_types:
+        card_providers = handle_field(generator, "bank:card_provider", fields, records_num, None, None)
+    if "card_number" in field_types:
+        if not card_providers:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid bank data field config for card_number (card_provider)"
+            )
+        card_numbers = handle_field(generator, "bank:card_number", fields, records_num, None, [card_providers])
+    if "card_security_code" in field_types:
+        card_security_codes = handle_field(generator, "bank:card_security_code", fields, records_num, None, None)
+    if "card_expiry_date" in field_types:
+        card_expiry_dates = handle_field(generator, "bank:card_expiry_date", fields, records_num, None, None)
+    return {**names, **addresses, **numbers, **ibans, **card_numbers, **card_providers, **card_security_codes, **card_expiry_dates}
 
 
 def handle_person_fields(fields: list[Field], records_num: int):
