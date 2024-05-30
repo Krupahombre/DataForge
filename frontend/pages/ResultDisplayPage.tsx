@@ -5,6 +5,7 @@ import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";
 import NavBar from "../components/NavBar";
+import CodeBlock from "../components/CodeBlock";
 
 const ResultDisplayPage: NextPage = () => {
   const [data, setData] = useState<IDisplayDataRecord[]>(
@@ -12,6 +13,8 @@ const ResultDisplayPage: NextPage = () => {
   );
   const [tabSelected, setTabSelected] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const [highlightedLine, setHighlightedLine] = useState<number | null>(null);
+  const [codeLanguage, setCodeLanguage] = useState<"json" | "sql">("sql");
 
   const router = useRouter();
 
@@ -22,6 +25,21 @@ const ResultDisplayPage: NextPage = () => {
   const fetchData = async () => {
     const stringRequestTables = localStorage.getItem("requestTables");
     const stringFormatFilters = localStorage.getItem("formatFilters");
+    if (stringFormatFilters) {
+      switch (stringFormatFilters.toLowerCase()) {
+        case `"JSON"`:
+          setCodeLanguage("json");
+          break;
+        case `"MYSQL"`:
+          setCodeLanguage("sql");
+          break;
+        case `"PSQL"`:
+          setCodeLanguage("sql");
+          break;
+        default:
+          setCodeLanguage("sql");
+      }
+    }
     if (stringRequestTables && stringFormatFilters) {
       const requestTables = JSON.parse(stringRequestTables);
       const formatFilters = JSON.parse(stringFormatFilters);
@@ -68,7 +86,7 @@ const ResultDisplayPage: NextPage = () => {
           .replace(/;/g, ";\n")
           .replace(/CREATE/g, "\nCREATE")
           .replace(/INSERT/g, "\nINSERT")
-          .replace(/DROP/g, "\nDROP")
+          .replace(/DROP/g, "DROP")
           .replace(/VALUES/g, "\nVALUES");
 
         return {
@@ -91,7 +109,6 @@ const ResultDisplayPage: NextPage = () => {
       setCopied(false);
     }, 1500);
   };
-  const [highlightedLine, setHighlightedLine] = useState<number | null>(null);
 
   return (
     <div className={styles.mainDiv}>
@@ -150,34 +167,7 @@ const ResultDisplayPage: NextPage = () => {
                   </button>
                 </div>
                 <div className={styles.responseDiv}>
-                  <div className={styles.lineNumberingDiv}>
-                    {record.response.split("\n").map((line, index) => (
-                      <div
-                        key={index}
-                        className={`${styles.lineNumber} ${
-                          highlightedLine === index ? styles.highlighted : ""
-                        }`}
-                        onMouseEnter={() => setHighlightedLine(index)}
-                        onMouseLeave={() => setHighlightedLine(null)}
-                      >
-                        {index + 1}
-                      </div>
-                    ))}
-                  </div>
-                  <pre className={styles.resultContentCode}>
-                    {record.response.split("\n").map((line, index) => (
-                      <div
-                        key={index}
-                        className={
-                          highlightedLine === index ? styles.highlighted : ""
-                        }
-                        onMouseEnter={() => setHighlightedLine(index)}
-                        onMouseLeave={() => setHighlightedLine(null)}
-                      >
-                        {line}
-                      </div>
-                    ))}
-                  </pre>
+                  <CodeBlock record={record.response} format={codeLanguage} />
                 </div>
               </div>
             ))}

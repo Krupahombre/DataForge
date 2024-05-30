@@ -1,5 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
+.MainHeroDiv {
+  background-color: #ccdbdc;
+  height: 100%;
+}
+
 .heroBox {
   padding-top: 1rem;
   display: flex;
@@ -7,7 +12,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  background-color: #f5f5f5;
+  background-color: #ccdbdc;
 }
 
 .heroLabel {
@@ -350,7 +355,7 @@
 }
 
 .returnBtn > svg {
-  fill: #4f6f52;
+  fill: #007ea7;
   position: absolute;
   top: -5%;
   left: -5%;
@@ -379,6 +384,7 @@
   flex-direction: column;
   position: relative;
   width: 90%;
+  max-width: 1000px;
   height: auto;
   background: #e8dfca;
   margin: 5% auto;
@@ -463,14 +469,14 @@
   line-height: 34px;
   font-size: 14px;
   color: #ffffff;
-  background-color: #4f6f52;
+  background-color: #007ea7;
   transition: background-color 0.2s ease-in-out 0s, opacity 0.2s ease-in-out 0s;
   padding: 0 18px;
 }
 
 .copyBtn:hover {
   color: #ffffff;
-  background-color: #3b523d;
+  background-color: #003249;
 }
 
 .btnDiv {
@@ -483,7 +489,7 @@
 }
 
 .responseDiv {
-  margin-top: 0px;
+  margin-top: 5px;
   display: flex;
   font-size: 0.8rem;
   line-height: 1.5;
@@ -500,7 +506,7 @@
 }
 
 .highlighted {
-  background-color: #bbb4a2;
+  background-color: #80ced7;
 }
 
 .lineNumber {
@@ -513,9 +519,9 @@
 .resultContentCode {
   overflow-wrap: break-word;
   word-break: break-word;
+  white-space: pre-wrap;
   padding: 0px 10px;
   border-radius: 5px;
-  white-space: pre-wrap;
   margin-top: 0px;
   font-size: 0.8rem;
 }
@@ -533,7 +539,7 @@
   padding: 15px;
   gap: 5px;
   margin: 0px;
-  background-image: linear-gradient(144deg, #4f6f52, #243a26 50%, #49804e);
+  background-image: linear-gradient(144deg, #80ced7, #003249 50%, #007ea7);
   align-items: center;
 }
 
@@ -548,4 +554,22 @@
   color: white;
   border-radius: 5px;
   padding: 5px;
+}
+
+.codeLine {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.preCode {
+  background: #003249;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.resultCodeAce {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
