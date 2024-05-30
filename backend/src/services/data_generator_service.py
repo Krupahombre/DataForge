@@ -5,10 +5,8 @@ from fastapi import HTTPException
 from starlette import status
 
 from src.generator import GENERATOR_FIELDS, GENERATORS
-
-from src.server.models.generator_model import GeneratorModel, Table, Field
-
 from src.generator.bank.bank_data_generator import bank_data_generator
+from src.server.models.generator_model import GeneratorModel, Table, Field
 
 logger = logging.getLogger("DataGeneratorService")
 request_metadate = {}
@@ -36,10 +34,12 @@ def handle_table(table: Table, records_num: int):
     bank_fields = [field for field in table.fields if field.type.startswith("bank")]
     if bank_fields:
         columns.update(handle_bank_fields(bank_fields, records_num))
-    other_fields = [field for field in table.fields if
-                    not field.type.startswith("person") and not field.type.startswith("bank")]
+    address_fields = [field for field in table.fields if field.type.startswith("address")]
+    if address_fields:
+        columns.update(handle_address_fields(address_fields, records_num))
+    other_fields = [field for field in table.fields if is_other_field(field)]
     for field in other_fields:
-        columns.update({(field.name, field.type), GENERATOR_FIELDS[field.type].generate(field.name, records_num)})
+        columns.update({(field.name, field.type), GENERATORS[field.type].generate(field.name, records_num)})
     return {table.name: columns}
 
 
@@ -47,6 +47,20 @@ def generate_seed_values_list(records_num: int, max_records: int) -> list:
     seed_list = random.sample(range(1, max_records + 1), records_num)
     random.shuffle(seed_list)
     return seed_list
+
+
+def handle_address_fields(fields: list[Field], records_num: int):
+    if not fields:
+        return
+    field_names = [field.type.split(":")[1] for field in fields]
+    request_dicts = {(field.name, field.type): [] for field in fields}
+    records = GENERATORS["address"].generate_subset(field_names, records_num)
+    for record in records:
+        for key, value in request_dicts.items():
+            field_val = getattr(record, key[1].split(":")[1])
+            value.append(field_val)
+
+    return request_dicts
 
 
 def handle_bank_fields(fields: list[Field], records_num: int):
@@ -110,36 +124,28 @@ def handle_person_fields(fields: list[Field], records_num: int):
         birth_dates = handle_field(generator, "person:birth_date", fields, records_num, None, None)
 
     if "name" in field_types:
-        if not sexes:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid person data field config for name (sex required)"
-            )
-        first_names = handle_field(generator, "person:name", fields, records_num, None, [sexes])
+        deps = [sexes] if sexes else None
+        first_names = handle_field(generator, "person:name", fields, records_num, None, deps)
 
     if "last_name" in field_types:
-        if not sexes:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid person data field config for last_name (sex required)"
-            )
-        last_names = handle_field(generator, "person:last_name", fields, records_num, None, [sexes])
+        deps = [sexes] if sexes else None
+        last_names = handle_field(generator, "person:last_name", fields, records_num, None, deps)
 
     if "pesel" in field_types:
-        if not sexes or not birth_dates:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid person data field config for pesel (birthdate and sex required)"
-            )
-        pesels = handle_field(generator, "person:pesel", fields, records_num, None, [birth_dates, sexes])
+        deps = []
+        if sexes:
+            deps.append(sexes)
+        if birth_dates:
+            deps.append(birth_dates)
+        pesels = handle_field(generator, "person:pesel", fields, records_num, None, deps)
 
     if "email" in field_types:
-        if not first_names or not last_names:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid person data field config for email (name and last_name required)"
-            )
-        emails = handle_field(generator, "person:email", fields, records_num, None, [first_names, last_names])
+        deps = []
+        if first_names:
+            deps.append(first_names)
+        if last_names:
+            deps.append(last_names)
+        emails = handle_field(generator, "person:email", fields, records_num, None, deps)
 
     return {**sexes, **birth_dates, **first_names, **last_names, **pesels, **emails}
 
@@ -149,4 +155,11 @@ def handle_field(generator: str, field_type: str, fields, records_num: int, seed
         deps = []
     field_name = next(field.name for field in fields if field.type == field_type)
     deps = [list(dep.values())[0] for dep in deps]
-    return {(field_name, field_type): GENERATORS[generator].generate(field_type.split(":")[1], records_num, seed_list, deps)}
+    return {(field_name, field_type): GENERATORS[generator].generate(field_type.split(":")[1], records_num, seed_list,
+                                                                     deps)}
+
+
+def is_other_field(field) -> bool:
+    return (not field.type.startswith("person")
+            and not field.type.startswith("bank")
+            and not field.type.startswith("address"))

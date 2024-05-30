@@ -1,17 +1,18 @@
+from src.generator.address.address_generator import AddressDataGenerator, address_data_generator
 from src.generator.bank.bank_data_generator import BankDataGenerator, bank_data_generator
 from src.generator.person.person_generator import PersonGenerator, person_generator
-from src.generator.person.email_generator import EmailGenerator
-from src.generator.person.pesel_generator import PeselGenerator
 
 GENERATOR_FIELDS = {
     "bank": BankDataGenerator.get_fields(),
     "person": PersonGenerator.get_fields(),
+    "address": AddressDataGenerator.get_fields(),
 }
 
 
 GENERATORS = {
     "bank": bank_data_generator,
     "person": person_generator,
+    "address": address_data_generator
 }
 
 FIELD_TYPES = {
@@ -32,5 +33,12 @@ FIELD_TYPES = {
         "card_security_code": str,
         "card_expiry_date": str,
         "card_provider": str,
+    },
+    "address": {
+        "street": str,
+        "number": str,
+        "postal_code": str,
+        "gus_terc": str,
+        "settlement": str,
     }
 }

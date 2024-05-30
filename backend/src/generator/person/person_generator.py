@@ -13,6 +13,7 @@ from src.generator.base_generator import BaseGenerator
 from src.generator.person.email_generator import email_generator
 from src.generator.person.pesel_generator import pesel_generator
 from src.utils.enums.gender import GenderEnum
+from nickname_generator import generate
 
 logger = logging.getLogger("PersonGenerator")
 fields = ["name", "last_name", "sex", "birth_date", "pesel", "email"]
@@ -52,17 +53,17 @@ class PersonGenerator(BaseGenerator):
             raise Exception(f"Unsupported field {field}")
         match field:
             case "name":
-                return self.generate_name_or_last_name(metadata[0], records_to_generate, field)
+                return self.generate_name_or_last_name(metadata, records_to_generate, field)
             case "last_name":
-                return self.generate_name_or_last_name(metadata[0], records_to_generate, field)
+                return self.generate_name_or_last_name(metadata, records_to_generate, field)
             case "sex":
                 return self.generate_sex(records_to_generate)
             case "birth_date":
                 return self.generate_birthdate(records_to_generate)
             case "pesel":
-                return self.generate_pesel(metadata[0], metadata[1], records_to_generate)
+                return self.generate_pesel(metadata, records_to_generate)
             case "email":
-                return self.generate_email(metadata[0], metadata[1], records_to_generate)
+                return self.generate_email(metadata, records_to_generate)
 
     @staticmethod
     def select_random_sex() -> str:
@@ -83,36 +84,58 @@ class PersonGenerator(BaseGenerator):
             out.append(self.select_random_sex())
         return out
 
-    def generate_name_or_last_name(self, sexes: list, records_to_generate: int, type: str) -> list:
-        if len(sexes) != records_to_generate:
-            logger.exception("No provided metadata for name")
-            raise Exception("No provided metadata for name")
+    def generate_name_or_last_name(self, metadata: list, records_to_generate: int, type: str) -> list:
         out = []
+        sexes = metadata[0] if metadata else None
         for i in range(0, records_to_generate):
-            if sexes[i] == 'male':
+            if sexes:
+                sex = sexes[i]
+            else:
+                sex = random.choice(list(GenderEnum)).name.lower()
+
+            if sex == 'male':
                 out.append(random.choice(self.male_names if type == "name" else self.male_last_names).name)
             else:
                 out.append(random.choice(self.female_names if type == "name" else self.female_last_names).name)
         return out
 
     @staticmethod
-    def generate_pesel(birthdates: list, sexes: list, records_to_generate: int) -> list:
-        if len(birthdates) != records_to_generate or len(sexes) != records_to_generate:
-            logger.exception("No provided metadata for pesel")
-            raise Exception("No provided metadata for pesel")
+    def generate_pesel(metadata: list, records_to_generate: int) -> list:
+        args_num = len(metadata)
+        sexes = metadata[0] if args_num >= 2 else None
+        if args_num >= 2:
+            birthdates = metadata[1]
+        elif args_num == 1:
+            birthdates = metadata[0]
+        else:
+            birthdates = None
+
         out = []
         for i in range(0, records_to_generate):
-            out.append(pesel_generator.generate_pesel(birthdates[i], sexes[i]))
+            if sexes:
+                sex = sexes[i]
+            else:
+                sex = random.choice(list(GenderEnum)).name.lower()
+
+            if birthdates:
+                birthdate = birthdates[i]
+            else:
+                birthdate = PersonGenerator.generate_birthdate(1)[0]
+
+            out.append(pesel_generator.generate_pesel(birthdate, sex))
         return out
 
     @staticmethod
-    def generate_email(names: list, last_names: list, records_to_generate: int) -> list:
-        if len(names) != records_to_generate or len(last_names) != records_to_generate:
-            logger.exception("No provided metadata for email")
-            raise Exception("No provided metadata for email")
+    def generate_email(metadata: list, records_to_generate: int) -> list:
+        args_num = len(metadata)
+        first_names = metadata[0] if args_num >= 1 else None
+        last_names = metadata[1] if args_num >= 2 else None
         out = []
         for i in range(0, records_to_generate):
-            out.append(email_generator.generate_email(names[i], last_names[i]))
+            if first_names and last_names:
+                out.append(email_generator.generate_email(first_names[i], last_names[i]))
+            else:
+                out.append(email_generator.generate_email(generate(), generate()))
         return out
 
 

@@ -1,5 +1,4 @@
 import logging
-import random
 
 from faker import Faker
 from src.database.generic_dal import get_all
