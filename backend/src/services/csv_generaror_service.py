@@ -1,4 +1,3 @@
-import json
 import logging
 
 from fastapi import HTTPException
@@ -9,9 +8,9 @@ from src.utils.enums.response_format import ResponseFormat
 logger = logging.getLogger("QueryGeneratorService")
 
 
-def generate_json(result: dict, records_num: int, type: ResponseFormat) -> dict[str, str]:
-    if type != ResponseFormat.JSON:
-        logger.exception(f"Invalid response format for json: {type}")
+def generate_csv(result: dict, records_num: int, type: ResponseFormat) -> dict[str, str]:
+    if type != ResponseFormat.CSV:
+        logger.exception(f"Invalid response format for csv: {type}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Invalid format for json: {type}"
@@ -20,13 +19,18 @@ def generate_json(result: dict, records_num: int, type: ResponseFormat) -> dict[
     for table in result:
         id_holder = 1
         result_gen = result[table]
-        objects = []
+        table_str = 'id, '
+        for element in result_gen:
+            table_str += element[0] + ', '
+        table_str = table_str[:-2]
+        table_str += '\n'
         for i in range(0, records_num):
-            obj = {"id": id_holder}
+            table_str += str(id_holder) + ', '
             for element in result_gen:
                 value = result_gen[element][i]
-                obj[element[0]] = str(value)
-            objects.append(obj)
+                table_str += str(value) + ', '
             id_holder += 1
-        output[table] = json.dumps(objects)
+            table_str = table_str[:-2]
+            table_str += '\n'
+        output[table] = table_str
     return output

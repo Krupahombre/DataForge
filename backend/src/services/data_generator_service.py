@@ -71,6 +71,10 @@ def handle_bank_fields(fields: list[Field], records_num: int):
     numbers = {}
     names = {}
     addresses = {}
+    card_providers = {}
+    card_numbers = {}
+    card_security_codes = {}
+    card_expiry_dates = {}
     seed_list = generate_seed_values_list(records_num, bank_data_generator.get_num_of_data_records())
     field_types = [field.type.split(":")[1] for field in fields]
     if "name" in field_types:
@@ -80,13 +84,18 @@ def handle_bank_fields(fields: list[Field], records_num: int):
     if "number" in field_types:
         numbers = handle_field(generator, "bank:number", fields, records_num, seed_list, None)
     if "iban" in field_types:
-        if not numbers:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid bank data field config for iban (number)"
-            )
-        ibans = handle_field(generator, "bank:iban", fields, records_num, seed_list, [numbers])
-    return {**names, **addresses, **numbers, **ibans}
+        deps = [numbers] if numbers else None
+        ibans = handle_field(generator, "bank:iban", fields, records_num, seed_list, deps)
+    if "card_provider" in field_types:
+        card_providers = handle_field(generator, "bank:card_provider", fields, records_num, None, None)
+    if "card_number" in field_types:
+        deps = [card_providers] if card_providers else None
+        card_numbers = handle_field(generator, "bank:card_number", fields, records_num, None, deps)
+    if "card_security_code" in field_types:
+        card_security_codes = handle_field(generator, "bank:card_security_code", fields, records_num, None, None)
+    if "card_expiry_date" in field_types:
+        card_expiry_dates = handle_field(generator, "bank:card_expiry_date", fields, records_num, None, None)
+    return {**names, **addresses, **numbers, **ibans, **card_numbers, **card_providers, **card_security_codes, **card_expiry_dates}
 
 
 def handle_person_fields(fields: list[Field], records_num: int):
@@ -107,36 +116,28 @@ def handle_person_fields(fields: list[Field], records_num: int):
         birth_dates = handle_field(generator, "person:birth_date", fields, records_num, None, None)
 
     if "name" in field_types:
-        if not sexes:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid person data field config for name (sex required)"
-            )
-        first_names = handle_field(generator, "person:name", fields, records_num, None, [sexes])
+        deps = [sexes] if sexes else None
+        first_names = handle_field(generator, "person:name", fields, records_num, None, deps)
 
     if "last_name" in field_types:
-        if not sexes:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid person data field config for last_name (sex required)"
-            )
-        last_names = handle_field(generator, "person:last_name", fields, records_num, None, [sexes])
+        deps = [sexes] if sexes else None
+        last_names = handle_field(generator, "person:last_name", fields, records_num, None, deps)
 
     if "pesel" in field_types:
-        if not sexes or not birth_dates:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid person data field config for pesel (birthdate and sex required)"
-            )
-        pesels = handle_field(generator, "person:pesel", fields, records_num, None, [birth_dates, sexes])
+        deps = []
+        if sexes:
+            deps.append(sexes)
+        if birth_dates:
+            deps.append(birth_dates)
+        pesels = handle_field(generator, "person:pesel", fields, records_num, None, deps)
 
     if "email" in field_types:
-        if not first_names or not last_names:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid person data field config for email (name and last_name required)"
-            )
-        emails = handle_field(generator, "person:email", fields, records_num, None, [first_names, last_names])
+        deps = []
+        if first_names:
+            deps.append(first_names)
+        if last_names:
+            deps.append(last_names)
+        emails = handle_field(generator, "person:email", fields, records_num, None, deps)
 
     return {**sexes, **birth_dates, **first_names, **last_names, **pesels, **emails}
 
@@ -146,8 +147,9 @@ def handle_field(generator: str, field_type: str, fields, records_num: int, seed
         deps = []
     field_name = next(field.name for field in fields if field.type == field_type)
     deps = [list(dep.values())[0] for dep in deps]
-    return {(field_name, field_type): GENERATORS[generator].generate(field_type.split(":")[1], records_num, seed_list,
-                                                                     deps)}
+    return {
+        (field_name, field_type): GENERATORS[generator].generate(field_type.split(":")[1], records_num, seed_list, deps)
+    }
 
 
 def is_other_field(field) -> bool:
