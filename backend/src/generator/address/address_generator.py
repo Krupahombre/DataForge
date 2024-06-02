@@ -32,7 +32,8 @@ class AddressDataGenerator(BaseGenerator):
     def get_fields() -> list[str]:
         return fields
 
-    def get_name(self) -> str:
+    @staticmethod
+    def get_name() -> str:
         return "address"
 
     def generate_subset(self, subset: list[str], records_to_generate: int) -> list:

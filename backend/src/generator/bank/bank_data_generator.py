@@ -31,7 +31,8 @@ class BankDataGenerator(BaseGenerator):
     def get_fields() -> list[str]:
         return fields
 
-    def get_name(self) -> str:
+    @staticmethod
+    def get_name() -> str:
         return "bank"
 
     def generate(self, field: str, records_to_generate: int, seed_list: list = None, metadata: list = None) -> list:
