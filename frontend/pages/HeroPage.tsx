@@ -19,6 +19,7 @@ const getFormat = (): IFilter[] => {
     { name: "JSON", selected: false },
     { name: "MySQL", selected: false },
     { name: "PSQL", selected: false },
+    { name: "CSV", selected: false },
   ];
 };
 

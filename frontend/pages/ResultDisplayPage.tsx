@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import type { NextPage } from "next";
 import NavBar from "../components/NavBar";
 import CodeBlock from "../components/CodeBlock";
+import { format } from "sql-formatter";
 
 const ResultDisplayPage: NextPage = () => {
   const [data, setData] = useState<IDisplayDataRecord[]>(
@@ -56,6 +57,10 @@ const ResultDisplayPage: NextPage = () => {
           const data = formatedJsonData(response);
           setData(data);
           setTabSelected(data?.[0]?.name || "");
+        } else if (stringFormatFilters == `"CSV"`) {
+          const data = formatedCsvData(response);
+          setData(data);
+          setTabSelected(data?.[0]?.name || "");
         } else {
           const data = formatedData(response);
           setData(data);
@@ -69,6 +74,20 @@ const ResultDisplayPage: NextPage = () => {
 
   const handleBack = () => {
     router.push("/");
+  };
+
+  const formatedCsvData = (response: IDisplayDataRecord[]) => {
+    if (response) {
+      const formatedStringData = response.map((record) => {
+        const formattedResponse = record.response;
+
+        return {
+          name: record.name,
+          response: formattedResponse,
+        };
+      });
+      return formatedStringData;
+    }
   };
 
   const formatedJsonData = (response: IDisplayDataRecord[]) => {
@@ -92,12 +111,7 @@ const ResultDisplayPage: NextPage = () => {
   const formatedData = (response: IDisplayDataRecord[]) => {
     if (response) {
       const formatedStringData = response.map((record) => {
-        const formattedResponse = record.response
-          .replace(/;/g, ";\n")
-          .replace(/CREATE/g, "\nCREATE")
-          .replace(/INSERT/g, "\nINSERT")
-          .replace(/DROP/g, "DROP")
-          .replace(/VALUES/g, "\nVALUES");
+        const formattedResponse = format(record.response);
 
         return {
           name: record.name,
