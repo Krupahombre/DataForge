@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import FormatFilters from "../components/FormatFilters";
-import TypeFilters from "../components/TypeFilters";
 import IFilter from "../common/models/IFilter";
 import { IRequestTable } from "../common/models/IRequestTable";
 import { IProductClass } from "../common/models/IProductClass";

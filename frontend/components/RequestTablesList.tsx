@@ -1,15 +1,19 @@
 import styles from "../styles/Home.module.css";
-import React, { useState } from "react";
+import React from "react";
 import { IRequestTable } from "../common/models/IRequestTable";
 import { TrashIcon } from "@heroicons/react/24/solid";
 
 interface IRequestTablesListProps {
-  tables: IRequestTable[];
+  requestTables: IRequestTable[];
   clearAllTables: () => void;
   removeTable: (table: IRequestTable) => void;
 }
 
-const RequestTablesList = ({ requestTables, clearAllTables, removeTable }) => {
+const RequestTablesList: React.FC<IRequestTablesListProps> = ({
+  requestTables,
+  clearAllTables,
+  removeTable,
+}) => {
   return requestTables.length === 0 ? null : (
     <div className={styles.requestTablesListWrapper}>
       <h2>{"Your tables:"}</h2>

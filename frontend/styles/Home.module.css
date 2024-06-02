@@ -7,7 +7,7 @@
   align-items: center;
   width: 100%;
   background-color: #ccdbdc;
-  height: 100vh;
+  max-height: 100vh;
 }
 
 .heroLabel {
