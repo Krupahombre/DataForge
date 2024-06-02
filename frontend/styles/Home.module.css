@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100vh;
+  height: 93vh;
 }
 
 .dataForge {
@@ -14,6 +14,8 @@
   width: 100%;
   background-color: #ccdbdc;
   height: 100vh;
+  max-height: 100vh;
+  overflow-y: hidden;
 }
 
 .heroLabel {
@@ -66,7 +68,8 @@
   margin-left: 1rem;
   padding: 1rem;
   background-color: #80ced7;
-  flex: 100%;
+  height: 100%;
+  overflow-y: scroll;
 }
 
 .requestTablesListItem {
@@ -120,6 +123,9 @@
   align-items: start;
   justify-content: center;
   flex: 1;
+  max-height: 100%;
+  overflow-y: hidden;
+  margin-bottom: 1rem;
 }
 
 .generateButton {
@@ -184,7 +190,7 @@
   margin: 10px;
 }
 
-.createNewRequestTableWrapper {
+.createNewRequestTable {
   display: flex;
   flex-direction: column;
   justify-content: left;
@@ -192,10 +198,11 @@
   border-radius: 5px;
   min-width: 30.5rem;
   font-size: 1.2rem;
-  height: max-content;
   box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.2);
-  overflow-y: scroll;
   background-color: #9ad1d4;
+  max-height: 80%;
+  min-height: 80%;
+  overflow-y: scroll;
 }
 
 .wymyslyKleksa {
@@ -206,9 +213,19 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  height: 100%;
+  overflow-y: hidden;
 }
 
-.createNewRequestTableWrapper > div {
+.createNewRequestTableWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  height: 98%;
+}
+
+.createNewRequestTable > div {
   margin: 5px;
   padding: 5px;
   display: flex;
@@ -268,7 +285,6 @@
   justify-content: left;
   align-items: left;
   font-size: 1rem;
-  height: 15rem;
 }
 
 .newRecordWrapperDropdown {
