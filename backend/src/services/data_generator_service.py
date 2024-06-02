@@ -63,8 +63,12 @@ def handle_address_fields(fields: list[Field], records_num: int):
     field_names = [field.type.split(":")[1] for field in fields]
     request_dicts = {(field.name, field.type): [] for field in fields}
     records = GENERATORS["address"].generate_subset(field_names, records_num)
+    for record in records:
+        for key, value in request_dicts.items():
+            field_val = getattr(record, key[1].split(":")[1])
+            value.append(field_val)
 
-    return handle_specific_generator_fields(records, request_dicts)
+    return request_dicts
 
 
 def handle_vehicle_fields(fields: list[Field], records_num: int):
@@ -72,8 +76,12 @@ def handle_vehicle_fields(fields: list[Field], records_num: int):
         return
     records = GENERATORS["vehicle"].generate_subset(None, records_num)
     request_dicts = {(field.name, field.type): [] for field in fields}
+    for record in records:
+        for key, value in request_dicts.items():
+            field_val = record[key[1].split(":")[1]]
+            value.append(field_val)
 
-    return handle_specific_generator_fields(records, request_dicts)
+    return request_dicts
 
 
 def handle_bank_fields(fields: list[Field], records_num: int):
@@ -163,15 +171,6 @@ def handle_field(generator: str, field_type: str, fields, records_num: int, seed
     return {
         (field_name, field_type): GENERATORS[generator].generate(field_type.split(":")[1], records_num, seed_list, deps)
     }
-
-
-def handle_specific_generator_fields(records: list, request_dicts: dict) -> dict:
-    for record in records:
-        for key, value in request_dicts.items():
-            field_val = getattr(record, key[1].split(":")[1])
-            value.append(field_val)
-
-    return request_dicts
 
 
 def is_other_field(field) -> bool:

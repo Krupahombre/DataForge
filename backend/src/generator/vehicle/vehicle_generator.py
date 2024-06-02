@@ -16,6 +16,7 @@ class VehicleDataGenerator(BaseGenerator):
         super().__init__()
         self.characters = string.digits + string.ascii_letters
         self.default_file_name = "vehicle-data-"
+        self.working_directory = "/code/src/generator/vehicle/"
         self.script_command = "ruby vehicle_data.rb {records_to_generate} {file_name}"
         self.supported_types = ["vehicle"]
 
@@ -52,11 +53,12 @@ class VehicleDataGenerator(BaseGenerator):
 
     def generate_subset(self, field: str, records_to_generate: int, seed_list: list = None, metadata: list = None) -> list:
         file_name = self.create_file_name()
-        file_path = "./" + file_name
+        file_path = os.path.join(self.working_directory, file_name)
         command_to_execute = self.replace_placeholders(self.script_command, records_to_generate, file_name)
 
         process = subprocess.Popen(
             command_to_execute.split(),
+            cwd=self.working_directory,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         ).wait()

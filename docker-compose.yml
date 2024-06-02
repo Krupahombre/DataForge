@@ -20,8 +20,6 @@ services:
       - .env
     ports:
       - 8080:80
-    volumes:
-      - ./backend:/code
 
   frontend:
     build:

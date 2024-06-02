@@ -26,8 +26,8 @@ num_of_vehicles.times do
     engine_type: vehicle.engine_type,
     transmission: vehicle.transmission,
     trim: vehicle.trim,
-    exterior_colors: vehicle.exterior_colors,
-    interior_colors: vehicle.interior_colors,
+    exterior_colors: vehicle.exterior_colors[0],
+    interior_colors: vehicle.interior_colors[0],
     vin: vehicle.vin
   }
   vehicles_data << vehicle_data
