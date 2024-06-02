@@ -32,9 +32,17 @@ const HeroPage: NextPage = () => {
   const [productClasses, setProductClasses] = useState<IProductClass[]>(
     defaultProductClasses
   );
-  const [numberOfRecords, setNumberOfRecords] = useState<number>(10);
+  const [numberOfRecords, setNumberOfRecords] = useState<number>(1);
 
   const router = useRouter();
+
+  useEffect(() => {
+    const stringRequestTables = localStorage.getItem("numberOfRecords");
+    console.log(stringRequestTables);
+    if (stringRequestTables) {
+      setNumberOfRecords(JSON.parse(stringRequestTables));
+    } else setNumberOfRecords(10);
+  }, []);
 
   const handleGenerate = () => {
     if (isFormFilled()) {
@@ -69,6 +77,7 @@ const HeroPage: NextPage = () => {
       return setNumberOfRecords(9999999);
     }
     setNumberOfRecords(number);
+    localStorage.setItem("numberOfRecords", JSON.stringify(number));
   };
 
   const isFormFilled = () => {

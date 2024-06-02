@@ -9,11 +9,9 @@ interface IRequestTablesListProps {
   removeTable: (table: IRequestTable) => void;
 }
 
-const RequestTablesList: React.FC<IRequestTablesListProps> = ({
-  requestTables,
-  clearAllTables,
-  removeTable,
-}) => {
+const RequestTablesList: React.FC<IRequestTablesListProps> = (props) => {
+  const { requestTables, clearAllTables, removeTable } = props;
+
   return requestTables.length === 0 ? null : (
     <div className={styles.requestTablesListWrapper}>
       <h2>{"Your tables:"}</h2>
@@ -25,11 +23,13 @@ const RequestTablesList: React.FC<IRequestTablesListProps> = ({
         <TrashIcon className={styles.recordXButton} />
       </div>
 
-      {requestTables.map((table) => (
-        <div className={styles.requestTablesListItem}>
+      {requestTables.map((table, key) => (
+        <div className={styles.requestTablesListItem} key={key}>
           <div>
             <h3>{table.name}</h3>
-            <div>{`Class has ${table.fields.length} attribute`}</div>
+            <div>{`Class has ${table.fields.length} attribute${
+              table.fields.length > 1 ? "s" : ""
+            }`}</div>
           </div>
           <TrashIcon
             className={styles.recordXButton}
