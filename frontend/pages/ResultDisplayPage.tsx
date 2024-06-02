@@ -14,7 +14,6 @@ const ResultDisplayPage: NextPage = () => {
   );
   const [tabSelected, setTabSelected] = useState<string>("");
   const [copied, setCopied] = useState(false);
-  const [highlightedLine, setHighlightedLine] = useState<number | null>(null);
   const [codeLanguage, setCodeLanguage] = useState<"json" | "csv" | "sql">(
     "sql"
   );
@@ -74,6 +73,10 @@ const ResultDisplayPage: NextPage = () => {
 
   const handleBack = () => {
     router.push("/");
+  };
+
+  const handleRegenerate = () => {
+    fetchData();
   };
 
   const formatedCsvData = (response: IDisplayDataRecord[]) => {
@@ -175,7 +178,18 @@ const ResultDisplayPage: NextPage = () => {
         <div>
           <h1 className={styles.resultDisplayTitle}>Generated Data</h1>
         </div>
-        <div></div>
+        <div className={styles.regenerateBtnDiv}>
+          <button className={styles.returnBtn} onClick={handleRegenerate}>
+            <span>Regenerate</span>
+            <svg
+              viewBox="-5 -5 110 110"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
+            </svg>
+          </button>
+        </div>
       </div>
       {data && (
         <div className={styles.tabsContainer}>
