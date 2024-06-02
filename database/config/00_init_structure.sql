@@ -1,5 +1,12 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+CREATE TABLE IF NOT EXISTS "AddressMigrations" (
+    "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "date" TIMESTAMP NOT NULL
+);
+
+INSERT INTO "AddressMigrations" ("date") VALUES (now());
+
 CREATE TABLE IF NOT EXISTS "EmailDomains" (
     "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     "domain" VARCHAR(255) NOT NULL UNIQUE
