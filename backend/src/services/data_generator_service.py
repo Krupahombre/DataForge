@@ -1,5 +1,6 @@
 import logging
 import random
+from typing import Any
 
 from fastapi import HTTPException
 from starlette import status
@@ -31,12 +32,19 @@ def handle_table(table: Table, records_num: int):
     person_fields = [field for field in table.fields if field.type.startswith("person")]
     if person_fields:
         columns.update(handle_person_fields(person_fields, records_num))
+
     bank_fields = [field for field in table.fields if field.type.startswith("bank")]
     if bank_fields:
         columns.update(handle_bank_fields(bank_fields, records_num))
+
     address_fields = [field for field in table.fields if field.type.startswith("address")]
     if address_fields:
         columns.update(handle_address_fields(address_fields, records_num))
+
+    vehicle_fields = [field for field in table.fields if field.type.startswith("vehicle")]
+    if vehicle_fields:
+        columns.update(handle_vehicle_fields(vehicle_fields, records_num))
+
     other_fields = [field for field in table.fields if is_other_field(field)]
     for field in other_fields:
         columns.update({(field.name, field.type), GENERATORS[field.type].generate(field.name, records_num)})
@@ -58,6 +66,19 @@ def handle_address_fields(fields: list[Field], records_num: int):
     for record in records:
         for key, value in request_dicts.items():
             field_val = getattr(record, key[1].split(":")[1])
+            value.append(field_val)
+
+    return request_dicts
+
+
+def handle_vehicle_fields(fields: list[Field], records_num: int):
+    if not fields:
+        return
+    records = GENERATORS["vehicle"].generate_subset(None, records_num)
+    request_dicts = {(field.name, field.type): [] for field in fields}
+    for record in records:
+        for key, value in request_dicts.items():
+            field_val = record[key[1].split(":")[1]]
             value.append(field_val)
 
     return request_dicts
@@ -155,4 +176,5 @@ def handle_field(generator: str, field_type: str, fields, records_num: int, seed
 def is_other_field(field) -> bool:
     return (not field.type.startswith("person")
             and not field.type.startswith("bank")
-            and not field.type.startswith("address"))
+            and not field.type.startswith("address")
+            and not field.type.startswith("vehicle"))

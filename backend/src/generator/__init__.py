@@ -1,18 +1,21 @@
 from src.generator.address.address_generator import AddressDataGenerator, address_data_generator
 from src.generator.bank.bank_data_generator import BankDataGenerator, bank_data_generator
 from src.generator.person.person_generator import PersonGenerator, person_generator
+from src.generator.vehicle.vehicle_generator import VehicleDataGenerator, vehicle_data_generator
 
 GENERATOR_FIELDS = {
     "bank": BankDataGenerator.get_fields(),
     "person": PersonGenerator.get_fields(),
     "address": AddressDataGenerator.get_fields(),
+    "vehicle": VehicleDataGenerator.get_fields()
 }
 
 
 GENERATORS = {
     "bank": bank_data_generator,
     "person": person_generator,
-    "address": address_data_generator
+    "address": address_data_generator,
+    "vehicle": vehicle_data_generator
 }
 
 FIELD_TYPES = {
@@ -40,5 +43,16 @@ FIELD_TYPES = {
         "postal_code": str,
         "gus_terc": str,
         "settlement": str,
+    },
+    "vehicle": {
+        "make": str,
+        "model": str,
+        "year": str,
+        "body_type": str,
+        "drivetrain": str,
+        "engine_type": str,
+        "exterior_colors": str,
+        "interior_colors": str,
+        "vin": str,
     }
 }
