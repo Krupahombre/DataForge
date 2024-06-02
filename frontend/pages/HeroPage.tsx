@@ -98,28 +98,29 @@ const HeroPage: NextPage = () => {
   };
 
   return (
-    // <div className={styles.dataForge}>
-    <div className={styles.heroBox}>
+    <div className={styles.dataForge}>
       <NavBar />
-      <div className={styles.userInputWrapper}>
-        <CreateNewRequestTable
-          productClasses={productClasses}
-          addTable={addTable}
-        />
-        <RequestTablesList
-          requestTables={requestTables}
-          clearAllTables={clearAllTables}
-          removeTable={removeTable}
+      <div className={styles.heroBox}>
+        <div className={styles.userInputWrapper}>
+          <CreateNewRequestTable
+            productClasses={productClasses}
+            addTable={addTable}
+          />
+          <RequestTablesList
+            requestTables={requestTables}
+            clearAllTables={clearAllTables}
+            removeTable={removeTable}
+          />
+        </div>
+
+        <FormatFilters
+          filters={formatFilters}
+          setFilters={setFormatFilters}
+          handleGenerate={handleGenerate}
+          numberOfRecords={numberOfRecords}
+          setNumberOfRecords={updateNumberOfRecords}
         />
       </div>
-
-      <FormatFilters
-        filters={formatFilters}
-        setFilters={setFormatFilters}
-        handleGenerate={handleGenerate}
-        numberOfRecords={numberOfRecords}
-        setNumberOfRecords={updateNumberOfRecords}
-      />
     </div>
   );
 };
