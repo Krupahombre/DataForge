@@ -5,7 +5,8 @@ import { IRequestTable } from "../models/IRequestTable";
 
 const getData = async (
   requestTables: IRequestTable[],
-  formatFilters: string
+  formatFilters: string,
+  numberOfRecords: number
 ): Promise<IDisplayDataRecord[]> => {
   const body = {
     tables: requestTables.map((table) => ({
@@ -15,7 +16,7 @@ const getData = async (
         type: `${field.type}:${field.subtype}`,
       })),
     })),
-    records: 10,
+    records: numberOfRecords,
     format: formatFilters.toLowerCase(),
   };
 

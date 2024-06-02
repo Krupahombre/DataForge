@@ -9,7 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { IProductClass } from "../common/models/IProductClass";
 
-interface IErrors{
+interface IErrors {
   tableNameError: boolean;
   recordNameError: boolean;
   noListItemsError: boolean;
@@ -46,7 +46,11 @@ const CreateNewRequestTable = (props) => {
 
   const onSubmitNewTable = () => {
     if (resultTable.name === "" || resultTable.fields.length === 0) {
-      setError({ ...error, tableNameError: resultTable.name === "", noListItemsError: resultTable.fields.length === 0 });
+      setError({
+        ...error,
+        tableNameError: resultTable.name === "",
+        noListItemsError: resultTable.fields.length === 0,
+      });
       return;
     }
 
@@ -69,16 +73,21 @@ const CreateNewRequestTable = (props) => {
   };
 
   const addAllSubtypes = () => {
-    const productClass:IProductClass = productClasses.find((productClass)=> productClass.name === resultTableRecord.type);
-    const records:IResultTableRecord[] = productClass.fields.map((field) => ({
+    const productClass: IProductClass = productClasses.find(
+      (productClass) => productClass.name === resultTableRecord.type
+    );
+    const records: IResultTableRecord[] = productClass.fields.map((field) => ({
       name: field,
       type: resultTableRecord.type,
       subtype: field,
     }));
-    
-    setResultTable({ ...resultTable, fields: [...resultTable.fields, ...records] })
+
+    setResultTable({
+      ...resultTable,
+      fields: [...resultTable.fields, ...records],
+    });
     onSelectedType("");
-  }
+  };
 
   const onChangedName = (name: string) => {
     setResultTableRecord({ ...resultTableRecord, name });
@@ -89,7 +98,7 @@ const CreateNewRequestTable = (props) => {
       resultTableRecord.name === "" ||
       resultTableRecord.type === "" ||
       resultTableRecord.subtype === ""
-    ){
+    ) {
       setError({ ...error, recordNameError: true });
       return;
     }
@@ -126,7 +135,10 @@ const CreateNewRequestTable = (props) => {
           style={error.tableNameError ? { border: "1px solid red" } : {}}
         />
       </div>
-      <div className={styles.createNewRequestTableWrapper} style={error.noListItemsError ? { border: "1px solid red" } : {}}>
+      <div
+        className={styles.createNewRequestTableWrapper}
+        style={error.noListItemsError ? { border: "1px solid red" } : {}}
+      >
         {resultTable.fields.map((field, key) => (
           <div className={styles.createNewRequestRecord}>
             <TrashIcon
@@ -151,7 +163,7 @@ const CreateNewRequestTable = (props) => {
           />
 
           <Dropdown className={styles.newRecordWrapperDropdown}>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <Dropdown.Toggle id="dropdown-basic" className={styles.dropdown}>
               {resultTableRecord.type ? resultTableRecord.type : "Choose type"}
             </Dropdown.Toggle>
 
@@ -169,7 +181,7 @@ const CreateNewRequestTable = (props) => {
 
           {resultTableRecord.type && (
             <Dropdown className={styles.newRecordWrapperDropdown}>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
+              <Dropdown.Toggle id="dropdown-basic" className={styles.dropdown}>
                 {resultTableRecord.subtype
                   ? resultTableRecord.subtype
                   : "Choose subtype"}
@@ -193,7 +205,7 @@ const CreateNewRequestTable = (props) => {
           {resultTableRecord.type && resultTableRecord.subtype && (
             <button
               type="button"
-              className={styles.newRecordAddBtn + " btn btn-dark"}
+              className={styles.newRecordAddBtn}
               onClick={addNewRecord}
             >
               Add
@@ -202,11 +214,7 @@ const CreateNewRequestTable = (props) => {
         </div>
         <div className={styles.newRequestSubmitBtnWrapper}></div>
       </div>
-      <button
-        type="button"
-        className={styles.newRequestSubmitBtn + " btn-dark"}
-        onClick={onSubmitNewTable}
-      >
+      <button className={styles.newRequestSubmitBtn} onClick={onSubmitNewTable}>
         ➕
       </button>
     </div>

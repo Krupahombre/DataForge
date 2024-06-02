@@ -11,6 +11,7 @@ import RequestTablesList from "../components/RequestTablesList";
 import CreateNewRequestTable from "../components/CreateNewRequestTable";
 import { getProductClasses } from "../common/services/getProductClasses";
 import "bootstrap/dist/css/bootstrap.min.css";
+import NavBar from "../components/NavBar";
 
 const defaultProductClasses: IProductClass[] = [];
 
@@ -18,7 +19,7 @@ const getFormat = (): IFilter[] => {
   return [
     { name: "JSON", selected: false },
     { name: "MySQL", selected: false },
-    { name: "PSQL", selected: false}
+    { name: "PSQL", selected: false },
   ];
 };
 
@@ -32,11 +33,13 @@ const HeroPage: NextPage = () => {
   const [productClasses, setProductClasses] = useState<IProductClass[]>(
     defaultProductClasses
   );
+  const [numberOfRecords, setNumberOfRecords] = useState<number>(10);
 
   const router = useRouter();
 
   const handleGenerate = () => {
     if (isFormFilled()) {
+      localStorage.setItem("numberOfRecords", JSON.stringify(numberOfRecords));
       localStorage.setItem("requestTables", JSON.stringify(requestTables));
       localStorage.setItem(
         "formatFilters",
@@ -59,6 +62,16 @@ const HeroPage: NextPage = () => {
     setFormatFilters(getFormat());
   }, []);
 
+  const updateNumberOfRecords = (number: number) => {
+    if (number < 1) {
+      return setNumberOfRecords(1);
+    }
+    if (number > 9999999) {
+      return setNumberOfRecords(9999999);
+    }
+    setNumberOfRecords(number);
+  };
+
   const isFormFilled = () => {
     return (
       formatFilters.some((column) => column.selected) &&
@@ -67,7 +80,10 @@ const HeroPage: NextPage = () => {
   };
 
   const addTable = (newTable: IRequestTable) => {
-    localStorage.setItem("requestTables", JSON.stringify([...requestTables, newTable]));
+    localStorage.setItem(
+      "requestTables",
+      JSON.stringify([...requestTables, newTable])
+    );
     setRequestTables([...requestTables, newTable]);
   };
 
@@ -75,37 +91,37 @@ const HeroPage: NextPage = () => {
     const newTables = requestTables.filter((t) => t.name !== table.name);
     setRequestTables(newTables);
     localStorage.setItem("requestTables", JSON.stringify(newTables));
-  }
+  };
 
   const clearAllTables = () => {
     localStorage.setItem("requestTables", JSON.stringify([]));
     setRequestTables([]);
-  }
+  };
 
   return (
     // <div className={styles.dataForge}>
-      <div className={styles.heroBox}>
-        <div>
-          <div className={styles.userInputWrapper}>
-            <CreateNewRequestTable
-              productClasses={productClasses}
-              addTable={addTable}
-            />
-            <RequestTablesList requestTables={requestTables} clearAllTables={clearAllTables} removeTable={removeTable}/>
-          </div>
-        </div>
-
-        <div className={styles.generateButtonBox}>
-          <FormatFilters
-            filters={formatFilters}
-            setFilters={setFormatFilters}
-          />
-          <button onClick={handleGenerate} className={styles.generateButton + " btn btn-dark"}>
-            Generate
-          </button>
-        </div>
+    <div className={styles.heroBox}>
+      <NavBar />
+      <div className={styles.userInputWrapper}>
+        <CreateNewRequestTable
+          productClasses={productClasses}
+          addTable={addTable}
+        />
+        <RequestTablesList
+          requestTables={requestTables}
+          clearAllTables={clearAllTables}
+          removeTable={removeTable}
+        />
       </div>
-    // </div>
+
+      <FormatFilters
+        filters={formatFilters}
+        setFilters={setFormatFilters}
+        handleGenerate={handleGenerate}
+        numberOfRecords={numberOfRecords}
+        setNumberOfRecords={updateNumberOfRecords}
+      />
+    </div>
   );
 };
 export default HeroPage;

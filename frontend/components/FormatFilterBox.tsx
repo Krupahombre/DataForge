@@ -3,7 +3,7 @@ import styles from "../styles/Home.module.css";
 const SquareBox = (props) => {
   const { changeSelectedState, selectedState, columnName } = props;
 
-  const color = selectedState ? "green" : "rgb(62, 99, 158)";
+  const color = selectedState ? "#003249" : "#007EA7";
 
   const handleClick = () => {
     changeSelectedState(columnName);
