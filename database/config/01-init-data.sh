@@ -1,0 +1,7 @@
+psql -d data_forge -c "COPY public.\"Addresses\"  (street, \"number\", postal_code, gus_terc, settlement)  FROM '/docker-entrypoint-initdb.d/data/addresses.csv' WITH CSV HEADER DELIMITER ','"
+psql -d data_forge -c "COPY public.\"EmailDomains\"  (domain)  FROM '/docker-entrypoint-initdb.d/data/email_domains.csv' WITH CSV HEADER DELIMITER ','"
+psql -d data_forge -c "COPY public.\"BankProviders\"  (internal_id, name, number, address)  FROM '/docker-entrypoint-initdb.d/data/bank_institutions.csv' WITH CSV HEADER DELIMITER ','"
+psql -d data_forge -c "COPY public.\"FemaleNames\"  (name)  FROM '/docker-entrypoint-initdb.d/data/female_names.csv' WITH CSV HEADER DELIMITER ','"
+psql -d data_forge -c "COPY public.\"MaleNames\"  (name)  FROM '/docker-entrypoint-initdb.d/data/male_names.csv' WITH CSV HEADER DELIMITER ','"
+psql -d data_forge -c "COPY public.\"FemaleLastNames\"  (name)  FROM '/docker-entrypoint-initdb.d/data/female_surnames.csv' WITH CSV HEADER DELIMITER ','"
+psql -d data_forge -c "COPY public.\"MaleLastNames\"  (name)  FROM '/docker-entrypoint-initdb.d/data/male_surnames.csv' WITH CSV HEADER DELIMITER ','"

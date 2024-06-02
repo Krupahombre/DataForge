@@ -6,11 +6,19 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from src.server.routers.data_generator_router import router as data_generator_router
+from src.worker.address_migration_worker import migration_worker
+
+
+def shutdown_event_handler():
+    migration_worker.stop()
+
+
+peewee_loger = logging.getLogger('peewee')
+peewee_loger.setLevel(logging.INFO)
 
 app = FastAPI()
-
 app.include_router(data_generator_router)
-
+app.add_event_handler("shutdown", shutdown_event_handler)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,4 +34,5 @@ logging.config.fileConfig(sys.argv[1], disable_existing_loggers=False)
 
 
 if __name__ == '__main__':
+    migration_worker.start()
     uvicorn.run(app=app, host="0.0.0.0", port=80, log_config=None)

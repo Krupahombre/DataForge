@@ -4,44 +4,85 @@ import IDisplayDataRecord from "../common/models/IDisplayDataRecord";
 import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";
+import NavBar from "../components/NavBar";
+import CodeBlock from "../components/CodeBlock";
+import { format } from "sql-formatter";
 
 const ResultDisplayPage: NextPage = () => {
   const [data, setData] = useState<IDisplayDataRecord[]>(
     [] as IDisplayDataRecord[]
   );
+  const [tabSelected, setTabSelected] = useState<string>("");
+  const [copied, setCopied] = useState(false);
+  const [codeLanguage, setCodeLanguage] = useState<"json" | "csv" | "sql">(
+    "sql"
+  );
+  const [error, setError] = useState<string>("");
 
   const router = useRouter();
 
   useEffect(() => {
-    const currentUrl = window.location.href;
-
-    const urlParams = new URLSearchParams(currentUrl);
-
-    const format = urlParams.get("format");
-    const types = urlParams.getAll("type");
-
-    fetchData(format, types);
+    fetchData();
   }, []);
 
-  const fetchData = async (format: string, types: string[]) => {
-    const response = await getData(format, types);
-    const data = formatedData(response);
-    setData(data);
+  const fetchData = async () => {
+    try {
+      const stringRequestTables = localStorage.getItem("requestTables");
+      const stringFormatFilters = localStorage.getItem("formatFilters");
+      const stringNumberOfRecords = localStorage.getItem("numberOfRecords");
+      if (stringFormatFilters) {
+        switch (stringFormatFilters.toLowerCase()) {
+          case `"JSON"`:
+            setCodeLanguage("json");
+            break;
+          case `"CSV"`:
+            setCodeLanguage("csv");
+            break;
+          default:
+            setCodeLanguage("sql");
+        }
+      }
+      if (stringRequestTables && stringFormatFilters && stringNumberOfRecords) {
+        const requestTables = JSON.parse(stringRequestTables);
+        const formatFilters = JSON.parse(stringFormatFilters);
+        const numberOfRecords = JSON.parse(stringNumberOfRecords);
+
+        const response = await getData(
+          requestTables,
+          formatFilters,
+          numberOfRecords
+        );
+        if (stringFormatFilters == `"JSON"`) {
+          const data = formatedJsonData(response);
+          setData(data);
+          setTabSelected(data?.[0]?.name || "");
+        } else if (stringFormatFilters == `"CSV"`) {
+          const data = formatedCsvData(response);
+          setData(data);
+          setTabSelected(data?.[0]?.name || "");
+        } else {
+          const data = formatedData(response);
+          setData(data);
+          setTabSelected(data?.[0]?.name || "");
+        }
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again later.");
+    }
   };
 
   const handleBack = () => {
     router.push("/");
   };
 
-  const formatedData = (response: IDisplayDataRecord[]) => {
+  const handleRegenerate = () => {
+    fetchData();
+  };
+
+  const formatedCsvData = (response: IDisplayDataRecord[]) => {
     if (response) {
       const formatedStringData = response.map((record) => {
-        const formattedResponse = record.response
-          .replace(/;/g, ";\n")
-          .replace(/CREATE/g, "\nCREATE")
-          .replace(/INSERT/g, "\nINSERT")
-          .replace(/DROP/g, "\nDROP")
-          .replace(/VALUES/g, "\nVALUES");
+        const formattedResponse = record.response;
 
         return {
           name: record.name,
@@ -52,20 +93,145 @@ const ResultDisplayPage: NextPage = () => {
     }
   };
 
+  const formatedJsonData = (response: IDisplayDataRecord[]) => {
+    if (response) {
+      const formatedStringData = response.map((record) => {
+        const formattedResponse = JSON.stringify(
+          JSON.parse(record.response),
+          null,
+          2
+        );
+
+        return {
+          name: record.name,
+          response: formattedResponse,
+        };
+      });
+      return formatedStringData;
+    }
+  };
+
+  const formatedData = (response: IDisplayDataRecord[]) => {
+    if (response) {
+      const formatedStringData = response.map((record) => {
+        const formattedResponse = format(record.response);
+
+        return {
+          name: record.name,
+          response: formattedResponse,
+        };
+      });
+      return formatedStringData;
+    }
+  };
+
+  const toggleTabSelected = (name: string) => {
+    setTabSelected(name);
+  };
+
+  const copyToClipboard = (record) => {
+    navigator.clipboard.writeText(record);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 1500);
+  };
+
+  if (error)
+    return (
+      <div className={styles.mainDiv}>
+        <NavBar />
+        <div className={styles.errorBox}>
+          <h1>{error}</h1>
+          <div>
+            <button className={styles.returnBtn} onClick={handleBack}>
+              <span>Return</span>
+              <svg
+                viewBox="-5 -5 110 110"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+
   return (
     <div className={styles.mainDiv}>
-      <div>
-        <button onClick={handleBack}>Return</button>
-        <h1 className={styles.resultDisplayTitle}>Generated Data</h1>
+      <NavBar />
+      <div className={styles.gridContainer}>
+        <div>
+          <button className={styles.returnBtn} onClick={handleBack}>
+            <span>Return</span>
+            <svg
+              viewBox="-5 -5 110 110"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
+            </svg>
+          </button>
+        </div>
+        <div>
+          <h1 className={styles.resultDisplayTitle}>Generated Data</h1>
+        </div>
+        <div className={styles.regenerateBtnDiv}>
+          <button className={styles.returnBtn} onClick={handleRegenerate}>
+            <span>Regenerate</span>
+            <svg
+              viewBox="-5 -5 110 110"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
+            </svg>
+          </button>
+        </div>
       </div>
       {data && (
-        <div className={styles.resultCodeDisplay}>
-          {data.map((record) => (
-            <div key={record.name}>
-              <p className={styles.resultDisplay}>{record.name}</p>
-              <pre className={styles.resultPDisplay}>{record.response}</pre>
-            </div>
-          ))}
+        <div className={styles.tabsContainer}>
+          <div className={styles.resultAllTab}>
+            {data.map((record) => (
+              <div
+                key={record.name}
+                className={
+                  tabSelected == record.name.toString()
+                    ? styles.activeTabs
+                    : styles.tabs
+                }
+                onClick={() => toggleTabSelected(record.name)}
+              >
+                {record.name}
+              </div>
+            ))}
+          </div>
+          <div className={styles.contentTabs}>
+            {data.map((record) => (
+              <div
+                key={record.name}
+                className={
+                  tabSelected == record.name.toString()
+                    ? styles.activeContent
+                    : styles.content
+                }
+              >
+                <div className={styles.btnDiv}>
+                  <button
+                    className={styles.copyBtn}
+                    onClick={() => copyToClipboard(record.response)}
+                  >
+                    {copied ? "Copied" : "Copy to Clipboard"}
+                  </button>
+                </div>
+                <div className={styles.responseDiv}>
+                  <CodeBlock record={record.response} format={codeLanguage} />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

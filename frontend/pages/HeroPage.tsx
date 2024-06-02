@@ -1,69 +1,135 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import FormatFilters from "../components/FormatFilters";
-import TypeFilters from "../components/TypeFilters";
 import IFilter from "../common/models/IFilter";
+import { IRequestTable } from "../common/models/IRequestTable";
+import { IProductClass } from "../common/models/IProductClass";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
+import RequestTablesList from "../components/RequestTablesList";
+import CreateNewRequestTable from "../components/CreateNewRequestTable";
+import { getProductClasses } from "../common/services/getProductClasses";
+import "bootstrap/dist/css/bootstrap.min.css";
+import NavBar from "../components/NavBar";
+
+const defaultProductClasses: IProductClass[] = [];
+
+const getFormat = (): IFilter[] => {
+  return [
+    { name: "JSON", selected: false },
+    { name: "MySQL", selected: false },
+    { name: "PSQL", selected: false },
+    { name: "CSV", selected: false },
+  ];
+};
 
 const HeroPage: NextPage = () => {
   const [formatFilters, setFormatFilters] = useState<IFilter[]>(
     [] as IFilter[]
   );
-  const [typeFilters, setTypeFilters] = useState<IFilter[]>([] as IFilter[]);
+  const [requestTables, setRequestTables] = useState<IRequestTable[]>(
+    [] as IRequestTable[]
+  );
+  const [productClasses, setProductClasses] = useState<IProductClass[]>(
+    defaultProductClasses
+  );
+  const [numberOfRecords, setNumberOfRecords] = useState<number>(1);
+
   const router = useRouter();
 
-  const handleGenerate = () => {
-    console.log(typeFilters, formatFilters);
-    const type = typeFilters.filter((column) => column.selected);
-    const format = formatFilters.find((type) => type.selected)?.name;
+  useEffect(() => {
+    const stringRequestTables = localStorage.getItem("numberOfRecords");
+    console.log(stringRequestTables);
+    if (stringRequestTables) {
+      setNumberOfRecords(JSON.parse(stringRequestTables));
+    } else setNumberOfRecords(10);
+  }, []);
 
+  const handleGenerate = () => {
     if (isFormFilled()) {
-      const queryString =
-        `a=b&format=${format}&` +
-        type.map((value) => `type=${value.name}`).join("&");
-      router.push(`/ResultDisplayPage?${queryString}`);
+      localStorage.setItem("numberOfRecords", JSON.stringify(numberOfRecords));
+      localStorage.setItem("requestTables", JSON.stringify(requestTables));
+      localStorage.setItem(
+        "formatFilters",
+        JSON.stringify(formatFilters.find((column) => column.selected).name)
+      );
+      router.push(`/ResultDisplayPage`);
+    } else {
+      alert("Please create at least one table and select a format!");
     }
   };
 
   useEffect(() => {
+    const stringRequestTables = localStorage.getItem("requestTables");
+    if (stringRequestTables) {
+      setRequestTables(JSON.parse(stringRequestTables));
+    }
+    getProductClasses().then((data) => {
+      setProductClasses(data);
+    });
     setFormatFilters(getFormat());
-    setTypeFilters(getTypes());
   }, []);
 
-  const getTypes = (): IFilter[] => {
-    return [
-      { name: "person", selected: false },
-      { name: "iban", selected: false },
-    ];
-  };
-
-  const getFormat = (): IFilter[] => {
-    return [
-      { name: "JSON", selected: false },
-      { name: "MySQL", selected: false },
-    ];
+  const updateNumberOfRecords = (number: number) => {
+    if (number < 1) {
+      return setNumberOfRecords(1);
+    }
+    if (number > 9999999) {
+      return setNumberOfRecords(9999999);
+    }
+    setNumberOfRecords(number);
+    localStorage.setItem("numberOfRecords", JSON.stringify(number));
   };
 
   const isFormFilled = () => {
     return (
       formatFilters.some((column) => column.selected) &&
-      typeFilters.some((type) => type.selected)
+      requestTables.length > 0
     );
   };
 
+  const addTable = (newTable: IRequestTable) => {
+    localStorage.setItem(
+      "requestTables",
+      JSON.stringify([...requestTables, newTable])
+    );
+    setRequestTables([...requestTables, newTable]);
+  };
+
+  const removeTable = (table: IRequestTable) => {
+    const newTables = requestTables.filter((t) => t.name !== table.name);
+    setRequestTables(newTables);
+    localStorage.setItem("requestTables", JSON.stringify(newTables));
+  };
+
+  const clearAllTables = () => {
+    localStorage.setItem("requestTables", JSON.stringify([]));
+    setRequestTables([]);
+  };
+
   return (
-    <div className={styles.heroBox}>
-      <h1 className={styles.heroLabel}>Data Forge</h1>
-      <h2 className={styles.heroSubLabel}>Generate your data!</h2>
-      <div className={styles.userInputWrapper}>
-        <TypeFilters filters={typeFilters} setFilters={setTypeFilters} />
-        <FormatFilters filters={formatFilters} setFilters={setFormatFilters} />
-      </div>
-      <div className={styles.generateBottonBox}>
-        <button onClick={handleGenerate} className={styles.generateButton}>
-          Generate
-        </button>
+    <div className={styles.dataForge}>
+      <NavBar />
+      <div className={styles.heroBox}>
+        <div className={styles.userInputWrapper}>
+          <CreateNewRequestTable
+            productClasses={productClasses}
+            addTable={addTable}
+          />
+          <RequestTablesList
+            requestTables={requestTables}
+            clearAllTables={clearAllTables}
+            removeTable={removeTable}
+          />
+        </div>
+
+        <FormatFilters
+          filters={formatFilters}
+          setFilters={setFormatFilters}
+          handleGenerate={handleGenerate}
+          numberOfRecords={numberOfRecords}
+          setNumberOfRecords={updateNumberOfRecords}
+        />
       </div>
     </div>
   );
