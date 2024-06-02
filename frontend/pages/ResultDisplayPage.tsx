@@ -14,7 +14,9 @@ const ResultDisplayPage: NextPage = () => {
   const [tabSelected, setTabSelected] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [highlightedLine, setHighlightedLine] = useState<number | null>(null);
-  const [codeLanguage, setCodeLanguage] = useState<"json" | "sql">("sql");
+  const [codeLanguage, setCodeLanguage] = useState<"json" | "csv" | "sql">(
+    "sql"
+  );
   const [error, setError] = useState<string>("");
 
   const router = useRouter();
@@ -33,11 +35,8 @@ const ResultDisplayPage: NextPage = () => {
           case `"JSON"`:
             setCodeLanguage("json");
             break;
-          case `"MYSQL"`:
-            setCodeLanguage("sql");
-            break;
-          case `"PSQL"`:
-            setCodeLanguage("sql");
+          case `"CSV"`:
+            setCodeLanguage("csv");
             break;
           default:
             setCodeLanguage("sql");
