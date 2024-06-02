@@ -8,3 +8,14 @@ export interface IResultTableRecord {
   type: string;
   subtype: string;
 }
+
+export const defaultTable: IRequestTable = {
+  name: "",
+  fields: [],
+};
+
+export const defaultResultTableRecord: IResultTableRecord = {
+  name: "",
+  type: "",
+  subtype: "",
+};

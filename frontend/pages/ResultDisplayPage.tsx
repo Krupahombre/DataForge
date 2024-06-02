@@ -5,6 +5,8 @@ import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";
 import NavBar from "../components/NavBar";
+import CodeBlock from "../components/CodeBlock";
+import { format } from "sql-formatter";
 
 const ResultDisplayPage: NextPage = () => {
   const [data, setData] = useState<IDisplayDataRecord[]>(
@@ -12,6 +14,10 @@ const ResultDisplayPage: NextPage = () => {
   );
   const [tabSelected, setTabSelected] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const [codeLanguage, setCodeLanguage] = useState<"json" | "csv" | "sql">(
+    "sql"
+  );
+  const [error, setError] = useState<string>("");
 
   const router = useRouter();
 
@@ -20,27 +26,71 @@ const ResultDisplayPage: NextPage = () => {
   }, []);
 
   const fetchData = async () => {
-    const stringRequestTables = localStorage.getItem("requestTables");
-    const stringFormatFilters = localStorage.getItem("formatFilters");
-    if (stringRequestTables && stringFormatFilters) {
-      const requestTables = JSON.parse(stringRequestTables);
-      const formatFilters = JSON.parse(stringFormatFilters);
-
-      const response = await getData(requestTables, formatFilters);
-      if (stringFormatFilters == `"JSON"`) {
-        const data = formatedJsonData(response);
-        setData(data);
-        setTabSelected(data?.[0]?.name || "");
-      } else {
-        const data = formatedData(response);
-        setData(data);
-        setTabSelected(data?.[0]?.name || "");
+    try {
+      const stringRequestTables = localStorage.getItem("requestTables");
+      const stringFormatFilters = localStorage.getItem("formatFilters");
+      const stringNumberOfRecords = localStorage.getItem("numberOfRecords");
+      if (stringFormatFilters) {
+        switch (stringFormatFilters.toLowerCase()) {
+          case `"JSON"`:
+            setCodeLanguage("json");
+            break;
+          case `"CSV"`:
+            setCodeLanguage("csv");
+            break;
+          default:
+            setCodeLanguage("sql");
+        }
       }
+      if (stringRequestTables && stringFormatFilters && stringNumberOfRecords) {
+        const requestTables = JSON.parse(stringRequestTables);
+        const formatFilters = JSON.parse(stringFormatFilters);
+        const numberOfRecords = JSON.parse(stringNumberOfRecords);
+
+        const response = await getData(
+          requestTables,
+          formatFilters,
+          numberOfRecords
+        );
+        if (stringFormatFilters == `"JSON"`) {
+          const data = formatedJsonData(response);
+          setData(data);
+          setTabSelected(data?.[0]?.name || "");
+        } else if (stringFormatFilters == `"CSV"`) {
+          const data = formatedCsvData(response);
+          setData(data);
+          setTabSelected(data?.[0]?.name || "");
+        } else {
+          const data = formatedData(response);
+          setData(data);
+          setTabSelected(data?.[0]?.name || "");
+        }
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again later.");
     }
   };
 
   const handleBack = () => {
     router.push("/");
+  };
+
+  const handleRegenerate = () => {
+    fetchData();
+  };
+
+  const formatedCsvData = (response: IDisplayDataRecord[]) => {
+    if (response) {
+      const formatedStringData = response.map((record) => {
+        const formattedResponse = record.response;
+
+        return {
+          name: record.name,
+          response: formattedResponse,
+        };
+      });
+      return formatedStringData;
+    }
   };
 
   const formatedJsonData = (response: IDisplayDataRecord[]) => {
@@ -64,12 +114,7 @@ const ResultDisplayPage: NextPage = () => {
   const formatedData = (response: IDisplayDataRecord[]) => {
     if (response) {
       const formatedStringData = response.map((record) => {
-        const formattedResponse = record.response
-          .replace(/;/g, ";\n")
-          .replace(/CREATE/g, "\nCREATE")
-          .replace(/INSERT/g, "\nINSERT")
-          .replace(/DROP/g, "\nDROP")
-          .replace(/VALUES/g, "\nVALUES");
+        const formattedResponse = format(record.response);
 
         return {
           name: record.name,
@@ -91,7 +136,28 @@ const ResultDisplayPage: NextPage = () => {
       setCopied(false);
     }, 1500);
   };
-  const [highlightedLine, setHighlightedLine] = useState<number | null>(null);
+
+  if (error)
+    return (
+      <div className={styles.mainDiv}>
+        <NavBar />
+        <div className={styles.errorBox}>
+          <h1>{error}</h1>
+          <div>
+            <button className={styles.returnBtn} onClick={handleBack}>
+              <span>Return</span>
+              <svg
+                viewBox="-5 -5 110 110"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div className={styles.mainDiv}>
@@ -112,7 +178,18 @@ const ResultDisplayPage: NextPage = () => {
         <div>
           <h1 className={styles.resultDisplayTitle}>Generated Data</h1>
         </div>
-        <div></div>
+        <div className={styles.regenerateBtnDiv}>
+          <button className={styles.returnBtn} onClick={handleRegenerate}>
+            <span>Regenerate</span>
+            <svg
+              viewBox="-5 -5 110 110"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
+            </svg>
+          </button>
+        </div>
       </div>
       {data && (
         <div className={styles.tabsContainer}>
@@ -150,34 +227,7 @@ const ResultDisplayPage: NextPage = () => {
                   </button>
                 </div>
                 <div className={styles.responseDiv}>
-                  <div className={styles.lineNumberingDiv}>
-                    {record.response.split("\n").map((line, index) => (
-                      <div
-                        key={index}
-                        className={`${styles.lineNumber} ${
-                          highlightedLine === index ? styles.highlighted : ""
-                        }`}
-                        onMouseEnter={() => setHighlightedLine(index)}
-                        onMouseLeave={() => setHighlightedLine(null)}
-                      >
-                        {index + 1}
-                      </div>
-                    ))}
-                  </div>
-                  <pre className={styles.resultContentCode}>
-                    {record.response.split("\n").map((line, index) => (
-                      <div
-                        key={index}
-                        className={
-                          highlightedLine === index ? styles.highlighted : ""
-                        }
-                        onMouseEnter={() => setHighlightedLine(index)}
-                        onMouseLeave={() => setHighlightedLine(null)}
-                      >
-                        {line}
-                      </div>
-                    ))}
-                  </pre>
+                  <CodeBlock record={record.response} format={codeLanguage} />
                 </div>
               </div>
             ))}
