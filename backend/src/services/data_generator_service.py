@@ -84,21 +84,13 @@ def handle_bank_fields(fields: list[Field], records_num: int):
     if "number" in field_types:
         numbers = handle_field(generator, "bank:number", fields, records_num, seed_list, None)
     if "iban" in field_types:
-        if not numbers:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid bank data field config for iban (number)"
-            )
-        ibans = handle_field(generator, "bank:iban", fields, records_num, seed_list, [numbers])
+        deps = [numbers] if numbers else None
+        ibans = handle_field(generator, "bank:iban", fields, records_num, seed_list, deps)
     if "card_provider" in field_types:
         card_providers = handle_field(generator, "bank:card_provider", fields, records_num, None, None)
     if "card_number" in field_types:
-        if not card_providers:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid bank data field config for card_number (card_provider)"
-            )
-        card_numbers = handle_field(generator, "bank:card_number", fields, records_num, None, [card_providers])
+        deps = [card_providers] if card_providers else None
+        card_numbers = handle_field(generator, "bank:card_number", fields, records_num, None, deps)
     if "card_security_code" in field_types:
         card_security_codes = handle_field(generator, "bank:card_security_code", fields, records_num, None, None)
     if "card_expiry_date" in field_types:
@@ -155,8 +147,9 @@ def handle_field(generator: str, field_type: str, fields, records_num: int, seed
         deps = []
     field_name = next(field.name for field in fields if field.type == field_type)
     deps = [list(dep.values())[0] for dep in deps]
-    return {(field_name, field_type): GENERATORS[generator].generate(field_type.split(":")[1], records_num, seed_list,
-                                                                     deps)}
+    return {
+        (field_name, field_type): GENERATORS[generator].generate(field_type.split(":")[1], records_num, seed_list, deps)
+    }
 
 
 def is_other_field(field) -> bool:

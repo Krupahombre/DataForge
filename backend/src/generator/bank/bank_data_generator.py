@@ -38,12 +38,9 @@ class BankDataGenerator(BaseGenerator):
         if field not in fields:
             self.logger.exception(f"Unsupported type {type}")
             raise Exception(f"Unsupported type {type}")
-
-        self.bank_institutions = list(self.bank_institutions)
-
         match field:
             case "iban":
-                return self.generate_iban(metadata[0], records_to_generate)
+                return self.generate_iban(metadata, records_to_generate)
             case "name":
                 return self.generate_name(seed_list)
             case "address":
@@ -51,7 +48,7 @@ class BankDataGenerator(BaseGenerator):
             case "number":
                 return self.generate_number(seed_list)
             case "card_number":
-                return self.generate_card_number(metadata[0], records_to_generate)
+                return self.generate_card_number(metadata, records_to_generate)
             case "card_security_code":
                 return self.generate_card_security_code(records_to_generate)
             case "card_expiry_date":
@@ -59,13 +56,14 @@ class BankDataGenerator(BaseGenerator):
             case "card_provider":
                 return self.generate_card_provider(records_to_generate)
 
-    def generate_iban(self, numbers: list, records_to_generate: int) -> list:
-        if len(numbers) != records_to_generate:
-            self.logger.exception("No provided metadata for iban")
-            raise Exception("No provided metadata for iban")
+    def generate_iban(self, metadata: list, records_to_generate: int) -> list:
         out = []
+        numbers = metadata[0] if metadata else None
         for i in range(0, records_to_generate):
-            out.append(iban_generator.generate_iban(numbers[i]))
+            if numbers:
+                out.append(iban_generator.generate_iban(numbers[i]))
+            else:
+                out.append(iban_generator.generate_iban(random.choice(self.bank_institutions.number)))
         return out
 
     def generate_number(self, seed_list: list) -> list:
@@ -89,10 +87,14 @@ class BankDataGenerator(BaseGenerator):
             out.append(data.address)
         return out
 
-    def generate_card_number(self, card_providers: list, records_to_generate: int) -> list:
+    def generate_card_number(self, metadata: list, records_to_generate: int) -> list:
         out = []
+        card_providers = metadata[0] if metadata else None
         for i in range(0, records_to_generate):
-            out.append(self.fake.credit_card_number(card_type=card_providers[i].lower()))
+            if card_providers:
+                out.append(self.fake.credit_card_number(card_type=card_providers[i].lower()))
+            else:
+                out.append(self.fake.credit_card_number(card_type=(random.choice(self.card_providers)).lower()))
         return out
 
     @staticmethod
