@@ -52,7 +52,7 @@ def handle_table(table: Table, records_num: int):
 
 
 def generate_seed_values_list(records_num: int, max_records: int) -> list:
-    seed_list = random.sample(range(1, max_records + 1), records_num)
+    seed_list = random.choices(range(1, max_records + 1), k=records_num)
     random.shuffle(seed_list)
     return seed_list
 
