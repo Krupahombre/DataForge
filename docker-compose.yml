@@ -20,7 +20,8 @@ services:
       - .env
     ports:
       - 8080:80
-
+    depends_on:
+      - db
   frontend:
     build:
       context: ./frontend
