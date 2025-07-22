@@ -10,7 +10,7 @@ from src.server.models.generator_model import GeneratorModel
 router = APIRouter(prefix="/data-generator", tags=["Data Generator"])
 
 
-@router.post("/", status_code=status.HTTP_200_OK)
+@router.post("/get-data", status_code=status.HTTP_200_OK)
 async def data_generator(generator_data: GeneratorModel):
     return generate_data_with_response_format(generator_data)
 
