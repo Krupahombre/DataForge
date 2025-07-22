@@ -166,13 +166,6 @@ const ResultDisplayPage: NextPage = () => {
         <div>
           <button className={styles.returnBtn} onClick={handleBack}>
             <span>Return</span>
-            <svg
-              viewBox="-5 -5 110 110"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
-            </svg>
           </button>
         </div>
         <div>
@@ -181,13 +174,7 @@ const ResultDisplayPage: NextPage = () => {
         <div className={styles.regenerateBtnDiv}>
           <button className={styles.returnBtn} onClick={handleRegenerate}>
             <span>Regenerate</span>
-            <svg
-              viewBox="-5 -5 110 110"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0" />
-            </svg>
+
           </button>
         </div>
       </div>

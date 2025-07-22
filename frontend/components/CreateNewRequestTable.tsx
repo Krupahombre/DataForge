@@ -109,7 +109,7 @@ const CreateNewRequestTable: React.FC<ICreateNewRequestTableProps> = (
           className={styles.newRequestSubmitBtn}
           onClick={onSubmitNewTable}
         >
-          ➕
+          Create table
         </button>
       </div>
     </div>
