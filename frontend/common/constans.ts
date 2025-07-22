@@ -1,1 +1,2 @@
-export const API_URL = "https://dataforge.malewi.cz/api/data-generator"
+export const API_URL = "https://dataforge.malewi.cz/data-generator";
+

@@ -20,7 +20,7 @@ const getData = async (
     format: formatFilters.toLowerCase(),
   };
 
-  const response = await axios.post(API_URL, body);
+  const response = await axios.post(API_URL + "/get-data", body);
 
   const mappedResponse: IDisplayDataRecord[] = Object.keys(response.data).map(
     (fieldname) => ({

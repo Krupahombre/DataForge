@@ -2,6 +2,7 @@ FROM python:3.11-alpine
 RUN apk update && \
     apk add --no-cache ruby ruby-dev
 WORKDIR /
+RUN apk add --no-cache build-base sqlite-dev
 RUN gem install vinbot
 WORKDIR /code
 ADD . /code
