@@ -26,7 +26,10 @@ services:
     build:
       context: ./frontend
     ports:
-      - 3000:3000
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    command: npm run start
+    depends_on:
+      - backend
+
